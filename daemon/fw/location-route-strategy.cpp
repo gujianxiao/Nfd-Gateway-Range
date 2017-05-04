@@ -94,7 +94,7 @@ void
 LocationRouteStrategy::printRouteTable() const
 {
     std::cout<<"-------------------------------------------------------------"<<std::endl;
-    std::cout<<std::setw(17)<<"dest"<<std::setw(17)<<"nexthop"<<std::setw(8)<<"weight"<<std::setw(13)<<"reach status"<<std::setw(12)<<"send status"<<std::setw(8)<<"face"<<std::endl;
+    std::cout<<std::setw(35)<<"dest"<<std::setw(35)<<"nexthop"<<std::setw(8)<<"weight"<<std::setw(13)<<"reach status"<<std::setw(12)<<"send status"<<std::setw(8)<<"face"<<std::endl;
     for(auto itr : gateway::Nwd::route_table)
     {
         std::cout<<itr.first<<itr.second<<std::endl;
