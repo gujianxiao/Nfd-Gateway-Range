@@ -242,7 +242,7 @@ int Nwd::ClientBroadcast(void)
         printNeighborsTable();  //打印邻居表
         RoutingtableUpdate();  //更新路由表
 
-        boost::this_thread::sleep(boost::posix_time::seconds(10));  //周期发送
+        boost::this_thread::sleep(boost::posix_time::seconds(30));  //周期发送
     }
 
 _out:
