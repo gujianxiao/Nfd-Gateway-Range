@@ -6,6 +6,7 @@
 #define NFD_MASTER_ROUTETABLE_ENTRY_HPP
 
 #include "../coordinate.h"
+#include "../range.hpp"
 #include "../face/face.hpp"
 
 namespace nfd{
@@ -20,17 +21,17 @@ namespace nfd{
         enum Send_Status {flood,sending,notsending,received};
     private:
 //        gateway::Coordinate dest_;
-        gateway::Coordinate nexthop_;
+        gateway::Range nexthop_;
         double weight_;
         Reach_Status rs_flag_;
         Send_Status ss_flag_;
         std::shared_ptr<Face> outface;
     public:
 
-        RouteTableEntry(const Coordinate &nexthop, double weight, Reach_Status rs_flag,Send_Status ss_flag, std::shared_ptr<Face>& face):
+        RouteTableEntry(const Range &nexthop, double weight, Reach_Status rs_flag,Send_Status ss_flag, std::shared_ptr<Face>& face):
             nexthop_(nexthop),weight_(weight),rs_flag_(rs_flag),ss_flag_(ss_flag),outface(face){}
 
-        RouteTableEntry():nexthop_(),weight_(0),rs_flag_(unknown),ss_flag_(notsending){}
+//        RouteTableEntry():nexthop_(),weight_(0),rs_flag_(unknown),ss_flag_(notsending){}
 
 //        gateway::Coordinate get_dest() const
 //        {
@@ -38,7 +39,7 @@ namespace nfd{
 //        }
 
 
-        gateway::Coordinate get_nexthop() const
+        gateway::Range get_nexthop() const
         {
             return nexthop_;
         }

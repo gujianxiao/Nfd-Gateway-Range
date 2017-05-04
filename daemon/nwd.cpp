@@ -11,16 +11,19 @@ namespace nfd {
     Nwd::Neighbor_Type Nwd::neighbors_list={};
     Nwd::Reverse_Neighbor_Type Nwd::reverse_neighbors_list={};
     Coordinate Nwd::self;
+    Range Nwd::self_range;
 		
 	Nwd::Nwd(nfd::Nfd& nfd) : m_flags(ndn::nfd::ROUTE_FLAG_CHILD_INHERIT), m_cost(DEFAULT_COST) ,
 		m_origin(ndn::nfd::ROUTE_ORIGIN_STATIC),m_expires(DEFAULT_EXPIRATION_PERIOD),
 		m_facePersistency(ndn::nfd::FacePersistency::FACE_PERSISTENCY_PERSISTENT),
 		m_controller(m_face, m_keyChain),m_serialManager(data_ready),m_t(m_face.getIoService()),
 		m_tsync(m_face.getIoService()),local_timestamp(0),globe_timestamp(0),m_forwarder(nfd.get_Forwarder()),wsn_nodes(0),
-		handle_interest_busy(false),longitude(10),latitude(10) //网关经纬度
+		handle_interest_busy(false),longitude(10),latitude(10),leftdown_longitude(9),leftdown_latitude(9),rightup_longitude(11),rightup_latitude(11) //网关经纬度
 	{
         self.set_latitude(latitude);
         self.set_longitude(longitude);
+        self_range.set_leftdown(Coordinate(leftdown_longitude,leftdown_latitude));
+        self_range.set_rightup(Coordinate(rightup_longitude,rightup_latitude));
 	}
 	
 	void
@@ -43,7 +46,7 @@ namespace nfd {
                                  ndn::RegisterPrefixSuccessCallback(),
                                  bind(&Nwd::onRegisterFailed, this, _1, _2));
 
-        m_face.setInterestFilter("/nfd/"+to_string(longitude)+"/"+to_string(latitude),
+        m_face.setInterestFilter("/NDN-IOT/"+to_string(leftdown_longitude)+"/"+to_string(leftdown_latitude)+"/"+to_string(rightup_longitude)+"/"+to_string(rightup_latitude),
                                  bind(&Nwd::nfd_location_onInterest, this, _1, _2),
                                  ndn::RegisterPrefixSuccessCallback(),
                                  bind(&Nwd::onRegisterFailed, this, _1, _2));
@@ -132,15 +135,51 @@ namespace nfd {
     }
 
     void
-    Nwd::NeighborsInitialize()   //邻居表初始化
+    Nwd::NeighborsInitialize()   //邻居表初始化 　
     {
         boost::this_thread::sleep(boost::posix_time::seconds(2));
-        getNeighborsCoordinate();  //邻居表初始化
+        getNeighborsRange();  //邻居表初始化
         printNeighborsTable();
     }
 
+//    void
+//    Nwd::getNeighborsCoordinate()  //初始化、更新邻居表
+//    {
+//        auto fib_entry_itr=m_forwarder->getFib().begin();
+//
+//
+//        for(;fib_entry_itr!=m_forwarder->getFib().end();fib_entry_itr++){
+//            std::ostringstream os;
+//            os<<(*fib_entry_itr).getPrefix()<<std::endl;
+//            std::string fib_entry_name=os.str();
+//            /*查找最近路由接口并转发，目前路由前缀为/nfd,后接地理位置*/
+//            if(fib_entry_name.find("/nfd")!=std::string::npos && fib_entry_name.find_first_of("0123456789") != std::string::npos) {
+//                std::cout<<"fib name is: "<<fib_entry_name;
+//                std::string::size_type pos1=fib_entry_name.find('/',1);
+//                std::string::size_type pos2=fib_entry_name.find('/',pos1+1);
+//                //      std::string::size_type pos3=fib_entry_name.find('/',pos2+1);
+//
+//                double position_x = std::stod(fib_entry_name.substr(pos1+1,pos2-pos1-1));
+//                double position_y = std::stod(fib_entry_name.substr(pos2+1));
+////            std::cout<<"position is ("<<position_x<<","<<position_y<<")"<<std::endl;
+//                fib::NextHopList nexthops;
+//                nexthops=fib_entry_itr->getNextHops();
+//                fib::NextHopList::const_iterator it = nexthops.begin();
+//                for (;it != nexthops.end();++it) {
+//                    shared_ptr <Face> outFace = it->getFace();
+//                    gateway::Nwd::neighbors_list.insert(make_pair(gateway::Coordinate(position_x, position_y), outFace));
+//                       gateway::Nwd::reverse_neighbors_list.insert(
+//                            make_pair(outFace, gateway::Coordinate(position_x, position_y)));
+//
+//                }
+//            }
+//
+//        }
+//    }
+
+
     void
-    Nwd::getNeighborsCoordinate()  //初始化、更新邻居表
+    Nwd::getNeighborsRange()  //初始化、更新邻居表
     {
         auto fib_entry_itr=m_forwarder->getFib().begin();
 
@@ -150,23 +189,28 @@ namespace nfd {
             os<<(*fib_entry_itr).getPrefix()<<std::endl;
             std::string fib_entry_name=os.str();
             /*查找最近路由接口并转发，目前路由前缀为/nfd,后接地理位置*/
-            if(fib_entry_name.find("/nfd")!=std::string::npos && fib_entry_name.find_first_of("0123456789") != std::string::npos) {
+            if(fib_entry_name.find("/NDN-IOT")!=std::string::npos && fib_entry_name.find_first_of("0123456789") != std::string::npos) {
                 std::cout<<"fib name is: "<<fib_entry_name;
                 std::string::size_type pos1=fib_entry_name.find('/',1);
                 std::string::size_type pos2=fib_entry_name.find('/',pos1+1);
-                //      std::string::size_type pos3=fib_entry_name.find('/',pos2+1);
+                std::string::size_type pos3=fib_entry_name.find('/',pos2+1);
+                std::string::size_type pos4=fib_entry_name.find('/',pos3+1);
+                std::string::size_type pos5=fib_entry_name.find('/',pos4+1);
 
-                double position_x = std::stod(fib_entry_name.substr(pos1+1,pos2-pos1-1));
-                double position_y = std::stod(fib_entry_name.substr(pos2+1));
+                double leftdown_position_x = std::stod(fib_entry_name.substr(pos1+1,pos2-pos1-1));
+                double leftdown_position_y = std::stod(fib_entry_name.substr(pos2+1,pos3-pos2-1));
+                double rightup_position_x= std::stod(fib_entry_name.substr(pos3+1,pos3-pos2-1));
+                double rightup_position_y= std::stod(fib_entry_name.substr(pos4+1,pos4-pos3-1));
+
 //            std::cout<<"position is ("<<position_x<<","<<position_y<<")"<<std::endl;
                 fib::NextHopList nexthops;
                 nexthops=fib_entry_itr->getNextHops();
                 fib::NextHopList::const_iterator it = nexthops.begin();
                 for (;it != nexthops.end();++it) {
                     shared_ptr <Face> outFace = it->getFace();
-                    gateway::Nwd::neighbors_list.insert(make_pair(gateway::Coordinate(position_x, position_y), outFace));
-                    gateway::Nwd::reverse_neighbors_list.insert(
-                            make_pair(outFace, gateway::Coordinate(position_x, position_y)));
+                    gateway::Nwd::neighbors_list.insert(make_pair(gateway::Range(Coordinate(leftdown_position_x, leftdown_position_y),Coordinate(rightup_position_x,rightup_position_y)), outFace));
+//                    gateway::Nwd::reverse_neighbors_list.insert(
+//                            make_pair(outFace, gateway::Coordinate(position_x, position_y)));
 
                 }
             }
@@ -178,7 +222,7 @@ namespace nfd {
     Nwd::printNeighborsTable() const
     {
         std::cout<<"-------------------------------------------------------------"<<std::endl;
-        std::cout<<std::setw(15)<<"neighbor"<<std::setw(15)<<"face"<<std::endl;
+        std::cout<<std::setw(35)<<"neighbor"<<std::setw(15)<<"face"<<std::endl;
         for(auto itr : gateway::Nwd::neighbors_list)
         {
             std::cout<<itr.first<<std::setw(15)<<itr.second->getRemoteUri()<<std::endl;
@@ -197,6 +241,24 @@ namespace nfd {
 		point_x = interest_name.substr(x_start+1,x_end-x_start-1);
 		point_y = interest_name.substr(y_start+1,y_end-y_start-1);
 	}
+
+    void
+    Nwd::getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y)
+    {
+        std::string::size_type left_x_start=interest_name.find('/',1);
+        std::string::size_type left_x_end = interest_name.find('/',left_x_start+1);
+        std::string::size_type left_y_start=left_x_end;
+        std::string::size_type left_y_end=interest_name.find('/',left_y_start+1);
+        leftdown_point_x = interest_name.substr(left_x_start+1,left_x_end-left_x_start-1);
+        leftdown_point_y = interest_name.substr(left_y_start+1,left_y_end-left_y_start-1);
+
+        std::string::size_type right_x_start=left_y_end;
+        std::string::size_type right_x_end = interest_name.find('/',right_x_start+1);
+        std::string::size_type right_y_start=right_x_end;
+        std::string::size_type right_y_end = interest_name.find('/',right_y_start+1);
+        rightup_point_x=interest_name.substr(right_x_start+1,right_x_end-right_x_start-1);
+        rightup_point_y=interest_name.substr(right_y_start+1,right_y_end-right_y_start-1);
+    }
 
 //    void
 //    Nwd::sendNdpDiscoverPacket()

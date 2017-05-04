@@ -59,6 +59,24 @@ LocationRouteStrategy::getPointLocation(std::string interest_name,std::string& p
 }
 
 void
+LocationRouteStrategy::getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y)
+{
+    std::string::size_type left_x_start=interest_name.find('/',1);
+    std::string::size_type left_x_end = interest_name.find('/',left_x_start+1);
+    std::string::size_type left_y_start=left_x_end;
+    std::string::size_type left_y_end=interest_name.find('/',left_y_start+1);
+    leftdown_point_x = interest_name.substr(left_x_start+1,left_x_end-left_x_start-1);
+    leftdown_point_y = interest_name.substr(left_y_start+1,left_y_end-left_y_start-1);
+
+    std::string::size_type right_x_start=left_y_end;
+    std::string::size_type right_x_end = interest_name.find('/',right_x_start+1);
+    std::string::size_type right_y_start=right_x_end;
+    std::string::size_type right_y_end = interest_name.find('/',right_y_start+1);
+    rightup_point_x=interest_name.substr(right_x_start+1,right_x_end-right_x_start-1);
+    rightup_point_y=interest_name.substr(right_y_start+1,right_y_end-right_y_start-1);
+}
+
+void
 LocationRouteStrategy::printNeighborsTable() const
 {
     std::cout<<"-------------------------------------------------------------"<<std::endl;
@@ -87,7 +105,7 @@ LocationRouteStrategy::printRouteTable() const
 
 
 std::vector<shared_ptr<Face>>
-LocationRouteStrategy::cal_Nexthos(gateway::Coordinate& dest,shared_ptr<pit::Entry> pitEntry)
+LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> pitEntry)
 {
     std::vector<shared_ptr<Face>> ret;
 //    auto neighbors_list_itr=gateway::Nwd::neighbors_list.find(dest);  //首先查询邻居列表，找到直接返回
@@ -101,7 +119,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Coordinate& dest,shared_ptr<pit::Ent
     //查询路由表
     double minweight  =std::numeric_limits<double>::max();
     shared_ptr<Face> minface;
-    gateway::Coordinate minnexthop;
+    gateway::Range minnexthop;
     auto route_table_itr=gateway::Nwd::route_table.begin();
     auto result=gateway::Nwd::route_table.find(dest);
     if(result!=gateway::Nwd::route_table.end())  //查找到了
@@ -124,7 +142,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Coordinate& dest,shared_ptr<pit::Ent
                     break;
             }
             if(it == range.second) {  //路由表以前没有该项
-                double weight = gateway::distance(itr.first, dest); //计算邻居节点与目的节点的距离
+                double weight = gateway::rangedistance(itr.first, dest); //计算邻居节点与目的节点的距离
                 auto tmp = gateway::Nwd::route_table.insert(
                         std::make_pair(dest, gateway::RouteTableEntry(itr.first, weight,
                                                                       gateway::RouteTableEntry::unknown,gateway::RouteTableEntry::notsending,itr.second)));  //将与目标初始值插入路由表
@@ -196,7 +214,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Coordinate& dest,shared_ptr<pit::Ent
 
         for(auto itr:gateway::Nwd::neighbors_list)
         {
-            double weight=gateway::distance(itr.first,dest); //计算邻居节点与目的节点的距离
+            double weight=gateway::rangedistance(itr.first,dest); //计算邻居节点与目的节点的距离
             auto tmp= gateway::Nwd::route_table.insert(std::make_pair(dest,gateway::RouteTableEntry(itr.first,weight,gateway::RouteTableEntry::unknown,gateway::RouteTableEntry::notsending,itr.second)));  //将与目标初始值插入路由表
             if(weight<minweight && itr.second->getId() != incoming_id)  //选择的路径不能包括来时的face
             {
@@ -208,7 +226,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Coordinate& dest,shared_ptr<pit::Ent
         }
 
     }
-    if(minnexthop == gateway::Nwd::get_SelfCoordinate()) //自己即是局部最小点
+    if(minnexthop == gateway::Nwd::get_SelfRange()) //自己即是局部最小点
     {
         std::cout<<"局部最小点  "<<minnexthop<<std::endl;
         for(auto itr:gateway::Nwd::neighbors_list){  //需要洪泛
@@ -254,40 +272,6 @@ LocationRouteStrategy::cal_Nexthos(gateway::Coordinate& dest,shared_ptr<pit::Ent
 
 }
 
-void
-LocationRouteStrategy::getNeighborsCoordinate(shared_ptr<pit::Entry> pitEntry)
-{
-    auto fib_entry_itr=m_forwarder.getFib().begin();
-
-
-    for(;fib_entry_itr!=m_forwarder.getFib().end();fib_entry_itr++){
-        std::ostringstream os;
-        os<<(*fib_entry_itr).getPrefix()<<std::endl;
-        std::string fib_entry_name=os.str();
-        /*查找最近路由接口并转发，目前路由前缀为/nfd,后接地理位置*/
-        if(fib_entry_name.find("/nfd")!=std::string::npos && fib_entry_name.find_first_of("0123456789") != std::string::npos) {
-            std::cout<<"fib name is: "<<fib_entry_name;
-            std::string::size_type pos1=fib_entry_name.find('/',1);
-            std::string::size_type pos2=fib_entry_name.find('/',pos1+1);
-            //      std::string::size_type pos3=fib_entry_name.find('/',pos2+1);
-
-            double position_x = std::stod(fib_entry_name.substr(pos1+1,pos2-pos1-1));
-            double position_y = std::stod(fib_entry_name.substr(pos2+1));
-//            std::cout<<"position is ("<<position_x<<","<<position_y<<")"<<std::endl;
-            fib::NextHopList nexthops;
-            nexthops=fib_entry_itr->getNextHops();
-            fib::NextHopList::const_iterator it = std::find_if(nexthops.begin(), nexthops.end(), [&pitEntry] (const fib::NextHop& nexthop) { return canForwardToLegacy(*pitEntry, *nexthop.getFace()); });
-            if (it != nexthops.end()) {
-                shared_ptr <Face> outFace = it->getFace();
-                gateway::Nwd::neighbors_list.insert(make_pair(gateway::Coordinate(position_x, position_y), outFace));
-                gateway::Nwd::reverse_neighbors_list.insert(
-                        make_pair(outFace, gateway::Coordinate(position_x, position_y)));
-
-            }
-        }
-
-    }
-}
 
 void LocationRouteStrategy::Interest_Expiry(shared_ptr<pit::Entry> pitEntry,const boost::system::error_code& err)
 {
@@ -298,11 +282,18 @@ void LocationRouteStrategy::Interest_Expiry(shared_ptr<pit::Entry> pitEntry,cons
 //    }
 //    std::cout<<"******************************************************************"<<std::endl;
 //
-    std::string Point_x,Point_y;
+    std::string leftdown_point_x, leftdown_point_y;
+    std::string rightup_point_x,rightup_point_y;
+
     std::ostringstream os;
     os<<pitEntry->getName();
-    getPointLocation(os.str(),Point_x,Point_y);
-    gateway::Coordinate dest(std::stod(Point_x),std::stod(Point_y));
+    getRangeLocation(os.str(), leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
+    double leftdown_point_x_val=std::stod(leftdown_point_x);
+    double leftdown_point_y_val=std::stod(leftdown_point_y);
+    double rightup_point_x_val=std::stod(rightup_point_x);
+    double rightup_point_y_val=std::stod(rightup_point_y);
+
+    gateway::Range dest(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
 
     bool flood_flag=false;  //洪泛标志
 
@@ -324,7 +315,7 @@ void LocationRouteStrategy::Interest_Expiry(shared_ptr<pit::Entry> pitEntry,cons
     {
         std::cout<<"！！！发送超时，洪泛！！！"<<std::endl;
         std::cout<<"pit条目："<<pitEntry->getName()<<"超时"<<std::endl;
-        gateway::Coordinate sending_cd; //之前发送的位置
+        gateway::Range sending_cd; //之前发送的位置
         auto rang=gateway::Nwd::route_table.equal_range(dest);
         for(auto it=rang.first;it!=rang.second;++it)
         {
@@ -370,15 +361,16 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
     std::string interest_name = interest.getName().toUri();
     std::cout<<"interest is :"<<interest_name<<std::endl;
 
-    std::string point_x,point_y;
-    getPointLocation(interest_name,point_x,point_y);
 
-    double point_x_val=std::stod(point_x);
-    double point_y_val=std::stod(point_y);
-//    std::cout<<"point_x: "<<point_x<<"    point_y: "<<point_y<<std::endl;
-    gateway::Coordinate dest(point_x_val,point_y_val);  //目标位置
+    std::string leftdown_point_x, leftdown_point_y;
+    std::string rightup_point_x,rightup_point_y;
+    getRangeLocation(interest_name, leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
+    double leftdown_point_x_val=std::stod(leftdown_point_x);
+    double leftdown_point_y_val=std::stod(leftdown_point_y);
+    double rightup_point_x_val=std::stod(rightup_point_x);
+    double rightup_point_y_val=std::stod(rightup_point_y);
 
-
+    gateway::Range destrange(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
 
     fib::NextHopList nexthops;   //下一跳的列表
     std::vector<shared_ptr<Face>> faces_to_send;
@@ -389,7 +381,7 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
 //    std::cout<<"邻居表读取完毕"<<std::endl;
 //    printNeighborsTable();
 
-    faces_to_send=cal_Nexthos(dest,pitEntry);  //计算并返回下一跳的fib条目
+    faces_to_send=cal_Nexthos(destrange,pitEntry);  //计算并返回下一跳的fib条目
     std::cout<<"计算下一跳完毕"<<std::endl;
     for(auto itr:faces_to_send)
     {
@@ -418,11 +410,19 @@ LocationRouteStrategy::beforeExpirePendingInterest(shared_ptr<pit::Entry> pitEnt
 {
     std::cout<<"******************************************************************"<<std::endl;
     std::cout<<"pit条目："<<pitEntry->getName()<<"失效"<<std::endl;
-    std::string Point_x,Point_y;
+    std::string leftdown_point_x, leftdown_point_y;
+    std::string rightup_point_x,rightup_point_y;
+
     std::ostringstream os;
     os<<pitEntry->getName();
-    getPointLocation(os.str(),Point_x,Point_y);
-    gateway::Coordinate dest(std::stod(Point_x),std::stod(Point_y));
+    getRangeLocation(os.str(), leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
+    double leftdown_point_x_val=std::stod(leftdown_point_x);
+    double leftdown_point_y_val=std::stod(leftdown_point_y);
+    double rightup_point_x_val=std::stod(rightup_point_x);
+    double rightup_point_y_val=std::stod(rightup_point_y);
+
+    gateway::Range dest(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
+
 
     auto range=gateway::Nwd::route_table.equal_range(dest);
     for(auto itr=range.first;itr!=range.second;++itr)
@@ -450,11 +450,19 @@ LocationRouteStrategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
         if(itr.second->getId() == inFace.getId())
         {
             std::cout << itr.first << std::endl;
-            std::string Point_x,Point_y;
+            std::string leftdown_point_x, leftdown_point_y;
+            std::string rightup_point_x,rightup_point_y;
+
             std::ostringstream os;
             os<<pitEntry->getName();
-            getPointLocation(os.str(),Point_x,Point_y);
-            gateway::Coordinate dest(std::stod(Point_x),std::stod(Point_y));
+            getRangeLocation(os.str(), leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
+            double leftdown_point_x_val=std::stod(leftdown_point_x);
+            double leftdown_point_y_val=std::stod(leftdown_point_y);
+            double rightup_point_x_val=std::stod(rightup_point_x);
+            double rightup_point_y_val=std::stod(rightup_point_y);
+
+            gateway::Range dest(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
+
             auto ret=gateway::Nwd::route_table.equal_range(dest);
             for(auto it=ret.first;it!=ret.second;++it)
             {

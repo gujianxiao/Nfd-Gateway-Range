@@ -30,6 +30,7 @@
 #include <queue>
 #include <unordered_map>
 #include "coordinate.h"
+#include "range.hpp"
 #include "table/routetable-entry.hpp"
 
 //获取网络设备
@@ -77,11 +78,13 @@ namespace nfd{
     class CoordinateEqual;
     class RouteTableEntry;
 
+    class Range;
+
 
 	class Nwd{
 	public:
-        using RouteTable_Type= std::unordered_multimap<Coordinate,RouteTableEntry,CoordinateHash,CoordinateEqual> ;
-        typedef std::unordered_multimap<Coordinate,std::shared_ptr<nfd::face::Face>,CoordinateHash,CoordinateEqual> Neighbor_Type;
+        using RouteTable_Type= std::unordered_multimap<Range,RouteTableEntry,RangeHash,RangeEqual> ;
+        typedef std::unordered_multimap<Range,std::shared_ptr<nfd::face::Face>,RangeHash,RangeEqual> Neighbor_Type;
         typedef std::unordered_map<std::shared_ptr<nfd::face::Face>,Coordinate> Reverse_Neighbor_Type;
 		Nwd(nfd::Nfd &);
 
@@ -171,10 +174,15 @@ namespace nfd{
         {
             return self;
         }
+        static Range get_SelfRange()
+        {
+            return self_range;
+        }
 
         static Neighbor_Type neighbors_list;  //邻居列表
         static RouteTable_Type route_table;  //路由表，计算邻居节点到目的节点的权值
         static Coordinate self;  //网关自身位置
+        static Range self_range;
         static Reverse_Neighbor_Type reverse_neighbors_list;
 
 	private:
@@ -187,8 +195,8 @@ namespace nfd{
         void
         printNeighborsTable() const;
 
-        void
-        getNeighborsCoordinate();
+//        void
+//        getNeighborsCoordinate();
 
         void
         wsnPeriodFind();
@@ -211,6 +219,11 @@ namespace nfd{
 		void
 		getPointLocation(std::string interest_name,std::string& point_x,std::string& point_y);
 
+        void
+        getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y);
+
+        void
+        getNeighborsRange();
 //        void
 //        onNdpData(const Interest& interest, const Data& data);
 
@@ -334,8 +347,14 @@ namespace nfd{
 		int wsn_nodes;
 		bool handle_interest_busy;
 //        std::map<std::pair<int,int>,int> routeweight_map;
+
         double longitude;  //经度
         double latitude;  //纬度
+
+        double leftdown_longitude;
+        double leftdown_latitude;
+        double rightup_longitude;
+        double rightup_latitude;
         std::unordered_map<std::string,std::string> ethface_map;
 
 

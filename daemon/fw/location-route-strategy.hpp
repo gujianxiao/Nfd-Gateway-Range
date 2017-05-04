@@ -67,11 +67,12 @@ public:
   typedef uint64_t FaceId;
   LocationRouteStrategy(Forwarder & forwarder,const Name & name = STRATEGY_NAME);
   void getPointLocation(std::string interest_name,std::string& point_x,std::string& point_y);
-  std::vector<shared_ptr<Face>> cal_Nexthos(gateway::Coordinate& ,shared_ptr<pit::Entry>);
-  void getNeighborsCoordinate(shared_ptr<pit::Entry>);
+  std::vector<shared_ptr<Face>> cal_Nexthos(gateway::Range& ,shared_ptr<pit::Entry>);
+//  void getNeighborsCoordinate(shared_ptr<pit::Entry>);
   void printRouteTable() const;
   void Interest_Expiry(shared_ptr<pit::Entry> pitEntry,const boost::system::error_code& err) ;
   void printNeighborsTable() const;
+  void getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y);
 
     virtual
   ~LocationRouteStrategy();

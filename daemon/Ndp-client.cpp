@@ -119,7 +119,7 @@ int Nwd::ClientBroadcast(void)
 
     time_t current_timestamp;
     std::time(&current_timestamp);
-    std::string ndp_discover=IP_FOUND+to_string(longitude)+"/"+to_string(latitude)+"/"+std::to_string(current_timestamp);
+    std::string ndp_discover=IP_FOUND+to_string(leftdown_longitude)+"/"+to_string(leftdown_latitude)+"/"+to_string(rightup_longitude)+"/"+to_string(rightup_latitude)+"/"+std::to_string(current_timestamp);
     //socket
     std::vector<int> sock_vec;  //保存sock
     std::unordered_multimap<std::string,std::string> ribItemName;
@@ -213,12 +213,13 @@ int Nwd::ClientBroadcast(void)
                             std::cout << "client receive ack: " << buf << std::endl;
                             //如果与IP_FOUND吻合
                             if (strncmp(buf, IP_FOUND_ACK, 9) == 0) {
-                                std::string point_x, point_y;
-                                getPointLocation(buf, point_x, point_y);
+                                std::string leftdown_point_x, leftdown_point_y;
+                                std::string rightup_point_x,rightup_point_y;
+                                getRangeLocation(buf, leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
 
                                 std::string remote_name = std::string("udp://") + remote_ip;
                                 std::cout << "remote_name:" << remote_name << std::endl;
-                                std::string fibitemname("/nfd/" + point_x + "/" + point_y);
+                                std::string fibitemname("/NDN-IOT/" + leftdown_point_x + "/" + leftdown_point_y + "/" +rightup_point_x + "/" +rightup_point_y);
                                 ribRegisterPrefix(fibitemname, remote_name);
                                 ribItemName.insert(std::make_pair(fibitemname,remote_name));
 //                        printf("client find %s\n", inet_ntoa(from_addr.sin_addr));
@@ -237,7 +238,7 @@ int Nwd::ClientBroadcast(void)
         }
         sock_vec.clear();
         neighbors_list.clear();  //清空邻居表
-        getNeighborsCoordinate();  //邻居表初始化、更新
+        getNeighborsRange();  //邻居表初始化、更新
         printNeighborsTable();  //打印邻居表
         RoutingtableUpdate();  //更新路由表
 

@@ -91,8 +91,9 @@ int Nwd::ServerListenBroadcast(void)
                     if( strncmp(buf, IP_FOUND,5) ==0 )
                     {
                         //send
-                        std::string point_x,point_y;
-                        getPointLocation(buf,point_x,point_y);
+                        std::string leftdown_point_x, leftdown_point_y;
+                        std::string rightup_point_x,rightup_point_y;
+                        getRangeLocation(buf, leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
 //                        std::cout<<"pointx: "<<point_x<<"pointy: "<<point_y<<std::endl;
                         std::string remote_ip(inet_ntoa(from_addr.sin_addr));
                         bool flag=true;
@@ -109,7 +110,7 @@ int Nwd::ServerListenBroadcast(void)
                         if(flag == true) {  //不是本地端口
                             time_t current_timestamp;
                             std::time(&current_timestamp);
-                            std::string ndp_discover_ack=IP_FOUND_ACK+to_string(longitude)+"/"+to_string(latitude)+"/"+std::to_string(current_timestamp);
+                            std::string ndp_discover_ack=IP_FOUND_ACK+to_string(leftdown_longitude)+"/"+to_string(leftdown_latitude)+"/"+to_string(rightup_longitude)+"/"+to_string(rightup_latitude)+"/"+std::to_string(current_timestamp);
                             std::cout<<"server send ack :"<<ndp_discover_ack<<std::endl;
 
                             //发送ＡＣＫ
@@ -124,7 +125,7 @@ int Nwd::ServerListenBroadcast(void)
                             std::string remote_name = std::string("udp://") + remote_ip;
                             std::cout << "remote_name:" << remote_name << std::endl;
 
-                            ribRegisterPrefix("/nfd/"+point_x+"/"+point_y,remote_name);
+                            ribRegisterPrefix("/NDN-IOT/" + leftdown_point_x + "/" + leftdown_point_y + "/" +rightup_point_x + "/" +rightup_point_y,remote_name);
                         }
 //						goto _out;	//退出
                     }
