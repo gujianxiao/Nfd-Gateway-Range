@@ -68,7 +68,7 @@ namespace nfd {
 
         NdpInitialize(); //NDP初始化，发现邻居
 
-        strategyChoiceSet("/nfd","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
+        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
 
     	m_face.processEvents();
 		
