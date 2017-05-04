@@ -8,8 +8,9 @@ namespace nfd {
 
         double rangedistance(const Range& r1, const Range& r2)
         {
-            Coordinate range1_coordinate((r1.rightup_.get_longitude()-r1.leftdown_.get_longitude())/2,(r1.rightup_.get_latitude()-r1.leftdown_.get_latitude())/2);
-            Coordinate range2_coordinate((r2.rightup_.get_longitude()-r2.leftdown_.get_longitude())/2,(r2.rightup_.get_latitude()-r2.leftdown_.get_latitude())/2);
+            Coordinate range1_coordinate((r1.rightup_.get_longitude()+r1.leftdown_.get_longitude())/2,(r1.rightup_.get_latitude()+r1.leftdown_.get_latitude())/2);
+            Coordinate range2_coordinate((r2.rightup_.get_longitude()+r2.leftdown_.get_longitude())/2,(r2.rightup_.get_latitude()+r2.leftdown_.get_latitude())/2);
+//            std::cout<<range1_coordinate<< " " <<range2_coordinate<<std::endl;
             return distance(range1_coordinate,range2_coordinate);  //调用点间距离的计算
         }
 
