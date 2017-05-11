@@ -178,6 +178,14 @@ namespace nfd{
         {
             return self_range;
         }
+        static void
+        RoutingtableUpdate();
+
+        static void
+        printNeighborsTable();
+
+        static void
+        getNeighborsRange();
 
         static void
         NDNIOT_location_onInterest(std::string& interest_name,const std::function<void(const std::shared_ptr<Face>& )>& callback );
@@ -195,14 +203,11 @@ namespace nfd{
         static double longitude;  //经度
         static double latitude;  //纬度
 	private:
-        void
-        RoutingtableUpdate();
+
 
         void
         NeighborsInitialize();
 
-        void
-        printNeighborsTable() const;
 
 //        void
 //        getNeighborsCoordinate();
@@ -231,8 +236,7 @@ namespace nfd{
         void
         getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y);
 
-        void
-        getNeighborsRange();
+
 //        void
 //        onNdpData(const Interest& interest, const Data& data);
 

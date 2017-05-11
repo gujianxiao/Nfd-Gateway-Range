@@ -247,7 +247,7 @@ namespace nfd {
     }
 
     void
-    Nwd::printNeighborsTable() const
+    Nwd::printNeighborsTable()
     {
         std::cout<<"-------------------------------------------------------------"<<std::endl;
         std::cout<<std::setw(35)<<"neighbor"<<std::setw(15)<<"face"<<std::endl;

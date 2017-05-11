@@ -354,6 +354,10 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
     // not a new Interest, don't forward
         return;
     }
+    //静态发现邻居
+    gateway::Nwd::getNeighborsRange();  //邻居表初始化、更新
+    gateway::Nwd::printNeighborsTable();  //打印邻居表
+    gateway::Nwd::RoutingtableUpdate();  //更新路由表
 
     incoming_id=inFace.getId();
 
