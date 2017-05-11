@@ -26,7 +26,7 @@ namespace nfd {
     std::map<std::string,std::pair<unsigned int,std::string>> Nwd::wifi_location_map;
     int Nwd::local_timestamp(0);
     std::queue<std::string> Nwd::receive_in_queue;
-    double Nwd::leftdown_longitude(116.35466),Nwd::leftdown_latitude(39.963745),Nwd::rightup_longitude(116.376722),Nwd::rightup_latitude(39.973975);
+    double Nwd::leftdown_longitude(116.364043),Nwd::leftdown_latitude(39.964516),Nwd::rightup_longitude(116.365911),Nwd::rightup_latitude(39.967447);
     double Nwd::longitude((leftdown_longitude+rightup_longitude)/2),Nwd::latitude((leftdown_latitude+rightup_latitude)/2) ;//网关经纬度
     std::queue<std::string> Nwd::origin_wsn_interestname;
     std::shared_ptr<Forwarder> Nwd::m_forwarder;
@@ -228,8 +228,8 @@ namespace nfd {
 
                 double leftdown_position_x = std::stod(fib_entry_name.substr(pos1+1,pos2-pos1-1));
                 double leftdown_position_y = std::stod(fib_entry_name.substr(pos2+1,pos3-pos2-1));
-                double rightup_position_x= std::stod(fib_entry_name.substr(pos3+1,pos3-pos2-1));
-                double rightup_position_y= std::stod(fib_entry_name.substr(pos4+1,pos4-pos3-1));
+                double rightup_position_x= std::stod(fib_entry_name.substr(pos3+1,pos4-pos3-1));
+                double rightup_position_y= std::stod(fib_entry_name.substr(pos4+1));
 
 //            std::cout<<"position is ("<<position_x<<","<<position_y<<")"<<std::endl;
                 fib::NextHopList nexthops;

@@ -215,6 +215,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
         for(auto itr:gateway::Nwd::neighbors_list)
         {
             double weight=gateway::rangedistance(itr.first,dest); //计算邻居节点与目的节点的距离
+      //      std::cout<<"权值： "<<weight<<std::endl;
             auto tmp= gateway::Nwd::route_table.insert(std::make_pair(dest,gateway::RouteTableEntry(itr.first,weight,gateway::RouteTableEntry::unknown,gateway::RouteTableEntry::notsending,itr.second)));  //将与目标初始值插入路由表
             if(weight<minweight && itr.second->getId() != incoming_id)  //选择的路径不能包括来时的face
             {
@@ -226,6 +227,8 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
         }
 
     }
+        
+    std::cout<<"minnexthop : "<<minnexthop<<"self : "<< gateway::Nwd::get_SelfRange()<<std::endl;   
     if(minnexthop == gateway::Nwd::get_SelfRange()) //自己即是局部最小点
     {
         std::cout<<"局部最小点  "<<minnexthop<<std::endl;
