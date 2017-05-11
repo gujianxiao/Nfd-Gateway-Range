@@ -39,7 +39,7 @@ const Name LocationRouteStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/loc
 NFD_REGISTER_STRATEGY(LocationRouteStrategy);
 
 LocationRouteStrategy::LocationRouteStrategy(Forwarder& forwarder, const Name& name)
-  : Strategy(forwarder, name),m_t(getGlobalIoService()),incoming_id(0)
+  : Strategy(forwarder, name),m_t(getGlobalIoService()),incoming_id(0),recv_interest_num(0),recv_data_num(0)
 {
 }
 LocationRouteStrategy::~LocationRouteStrategy()
@@ -80,7 +80,7 @@ void
 LocationRouteStrategy::printNeighborsTable() const
 {
     std::cout<<"-------------------------------------------------------------"<<std::endl;
-    std::cout<<std::setw(15)<<"neighbor"<<std::setw(15)<<"face"<<std::endl;
+    std::cout<<std::setw(30)<<"neighbor"<<std::setw(15)<<"face"<<std::endl;
     for(auto itr : gateway::Nwd::neighbors_list)
     {
         std::cout<<itr.first<<std::setw(15)<<itr.second->getRemoteUri()<<std::endl;
@@ -94,7 +94,7 @@ void
 LocationRouteStrategy::printRouteTable() const
 {
     std::cout<<"-------------------------------------------------------------"<<std::endl;
-    std::cout<<std::setw(35)<<"dest"<<std::setw(35)<<"nexthop"<<std::setw(8)<<"weight"<<std::setw(13)<<"reach status"<<std::setw(12)<<"send status"<<std::setw(8)<<"face"<<std::endl;
+    std::cout<<std::setw(30)<<"dest"<<std::setw(30)<<"nexthop"<<std::setw(10)<<"weight"<<std::setw(13)<<"reach status"<<std::setw(12)<<"send status"<<std::setw(8)<<"face"<<std::endl;
     for(auto itr : gateway::Nwd::route_table)
     {
         std::cout<<itr.first<<itr.second<<std::endl;
@@ -262,7 +262,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
 //        time::steady_clock::TimePoint lastExpiry = lastExpiring->getExpiry();
 //        time::nanoseconds lastExpiryFromNow = lastExpiry - time::steady_clock::now();
         std::shared_ptr<boost::asio::steady_timer> timer_ptr(new boost::asio::steady_timer(getGlobalIoService()));
-        timer_ptr->expires_from_now(std::chrono::milliseconds(1000));
+        timer_ptr->expires_from_now(std::chrono::milliseconds(1600));
         timer_ptr->async_wait(boost::bind(&LocationRouteStrategy::Interest_Expiry,this,pitEntry,boost::asio::placeholders::error));
         timer_queue.push(timer_ptr);
     }
@@ -349,7 +349,7 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
                                         shared_ptr<pit::Entry> pitEntry)
 {
     std::cout<<"******************************************************************"<<std::endl;
-    std::cout<<"receive a nfd location Interest"<<std::endl;
+    std::cout<<"receive a NDN-IOT location Interest :  "<<++recv_interest_num<<std::endl;
     if (hasPendingOutRecords(*pitEntry)) {
     // not a new Interest, don't forward
         return;
@@ -369,6 +369,14 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
     double leftdown_point_y_val=std::stod(leftdown_point_y);
     double rightup_point_x_val=std::stod(rightup_point_x);
     double rightup_point_y_val=std::stod(rightup_point_y);
+
+    if(belong_this_gateway(leftdown_point_x_val,leftdown_point_y_val,rightup_point_x_val,rightup_point_y_val))
+    {
+        auto func=bind(&LocationRouteStrategy::sendInterest_callback, this, pitEntry, _1);
+        gateway::Nwd::NDNIOT_location_onInterest(interest_name,func);
+        return;
+    }
+
 
     gateway::Range destrange(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
 
@@ -420,6 +428,8 @@ LocationRouteStrategy::beforeExpirePendingInterest(shared_ptr<pit::Entry> pitEnt
     double leftdown_point_y_val=std::stod(leftdown_point_y);
     double rightup_point_x_val=std::stod(rightup_point_x);
     double rightup_point_y_val=std::stod(rightup_point_y);
+    if(belong_this_gateway(leftdown_point_x_val,leftdown_point_y_val,rightup_point_x_val,rightup_point_y_val))
+        return;
 
     gateway::Range dest(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
 
@@ -438,28 +448,50 @@ LocationRouteStrategy::beforeExpirePendingInterest(shared_ptr<pit::Entry> pitEnt
 
 }
 
+bool
+LocationRouteStrategy::belong_this_gateway(double leftdown_point_x, double leftdown_point_y, double rightup_point_x,double rightup_point_y)
+{
+    if(leftdown_point_x>=gateway::Nwd::leftdown_longitude && leftdown_point_y >= gateway::Nwd::leftdown_latitude && rightup_point_x <= gateway::Nwd::rightup_longitude && rightup_point_y <= gateway::Nwd::rightup_latitude)
+    {
+        std::cout<<"in gateway"<<std::endl;
+        return  true;
+    }
+    else
+    {
+        std::cout<<"not in gateway"<<std::endl;
+        return  false;
+    }
+
+}
+
 void
 LocationRouteStrategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
                           const Face& inFace, const Data& data)
 {
+    std::cout<<"收到NDN-IOT data:  "<<++recv_data_num<<std::endl;
+    std::string leftdown_point_x, leftdown_point_y;
+    std::string rightup_point_x,rightup_point_y;
+
+    std::ostringstream os;
+    os<<pitEntry->getName();
+    getRangeLocation(os.str(), leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
+    double leftdown_point_x_val=std::stod(leftdown_point_x);
+    double leftdown_point_y_val=std::stod(leftdown_point_y);
+    double rightup_point_x_val=std::stod(rightup_point_x);
+    double rightup_point_y_val=std::stod(rightup_point_y);
+    if(belong_this_gateway(leftdown_point_x_val,leftdown_point_y_val,rightup_point_x_val,rightup_point_y_val))
+        return;
+
+
     std::cout<<"******************************************************************"<<std::endl;
 //    m_t.cancel_one(); //取消超时定时器
-    std::cout<<"收到data from ";
+
     for(auto itr : gateway::Nwd::neighbors_list)
     {
         if(itr.second->getId() == inFace.getId())
         {
             std::cout << itr.first << std::endl;
-            std::string leftdown_point_x, leftdown_point_y;
-            std::string rightup_point_x,rightup_point_y;
 
-            std::ostringstream os;
-            os<<pitEntry->getName();
-            getRangeLocation(os.str(), leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y);
-            double leftdown_point_x_val=std::stod(leftdown_point_x);
-            double leftdown_point_y_val=std::stod(leftdown_point_y);
-            double rightup_point_x_val=std::stod(rightup_point_x);
-            double rightup_point_y_val=std::stod(rightup_point_y);
 
             gateway::Range dest(gateway::Coordinate(leftdown_point_x_val,leftdown_point_y_val),gateway::Coordinate(rightup_point_x_val,rightup_point_y_val));
 
@@ -482,6 +514,14 @@ LocationRouteStrategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
     std::cout<<"******************************************************************"<<std::endl;
 
 
+}
+
+void LocationRouteStrategy::sendInterest_callback(const shared_ptr<pit::Entry>& pitEntry, const shared_ptr<Face>& outFace)
+{
+    this->sendInterest(pitEntry, outFace);
+    std::cout<<"发送interest到wifi"<<std::endl;
+    std::cout<<"PitEntry："<<pitEntry->getName()<<"  ";
+    std::cout<<"send to Face : "<<outFace->getRemoteUri()<<std::endl;
 }
 
 

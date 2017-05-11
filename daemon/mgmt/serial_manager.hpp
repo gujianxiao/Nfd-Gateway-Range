@@ -137,7 +137,7 @@ namespace nfd {
         public:
             uint16_t local_timestamp;
 
-            serial_manager(boost::condition_variable_any& );
+            serial_manager();
 
             void read_data(std::map<std::string,std::set<std::string>>& ,std::map<std::string,std::string>&);
 
@@ -196,7 +196,7 @@ namespace nfd {
             char *scope_name;
 
 //			boost::mutex& mu;
-			boost::condition_variable_any& data_ready;
+//			boost::condition_variable_any& data_ready;
 
             int g_count;
 

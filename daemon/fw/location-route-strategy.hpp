@@ -72,8 +72,9 @@ public:
   void printRouteTable() const;
   void Interest_Expiry(shared_ptr<pit::Entry> pitEntry,const boost::system::error_code& err) ;
   void printNeighborsTable() const;
-  void getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y);
-
+  static void getRangeLocation(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y);
+  bool belong_this_gateway(double leftdown_point_x, double leftdown_point_y, double rightup_point_x,double rightup_point_y);
+  void  sendInterest_callback(const shared_ptr<pit::Entry>& pitEntry, const shared_ptr<Face>& outFace);
     virtual
   ~LocationRouteStrategy();
 
@@ -96,6 +97,8 @@ private:
     boost::asio::steady_timer m_t;
     std::queue<std::shared_ptr<boost::asio::steady_timer>> timer_queue;
     FaceId incoming_id;
+    unsigned int recv_interest_num;
+    unsigned int recv_data_num;
 
 //  std::unordered_map<gateway::Coordinate,Fib::const_iterator,gateway::CoordinateHash,gateway::CoordinateEqual> neighbors_list;
 

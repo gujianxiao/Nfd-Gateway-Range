@@ -179,12 +179,21 @@ namespace nfd{
             return self_range;
         }
 
+        static void
+        NDNIOT_location_onInterest(std::string& interest_name,const std::function<void(const std::shared_ptr<Face>& )>& callback );
+
         static Neighbor_Type neighbors_list;  //邻居列表
         static RouteTable_Type route_table;  //路由表，计算邻居节点到目的节点的权值
         static Coordinate self;  //网关自身位置
         static Range self_range;
         static Reverse_Neighbor_Type reverse_neighbors_list;
+        static double leftdown_longitude;
+        static double leftdown_latitude;
+        static double rightup_longitude;
+        static double rightup_latitude;
 
+        static double longitude;  //经度
+        static double latitude;  //纬度
 	private:
         void
         RoutingtableUpdate();
@@ -247,26 +256,52 @@ namespace nfd{
 		void
   		onInterest(const ndn::InterestFilter& filter, const Interest& interest);
 
+        static void
+        getRangeLocation_Time_DataType(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y,std::string& start_time,std::string& end_time,std::string& datatype);
+
+        static void
+        wsn_onInterest(std::string interest_name);
+
+        static void
+        wsn_splite_location(std::string& str);
+
 		void
 		Topo_onInterest(const ndn::InterestFilter& filter, const Interest& interest);
 
+        static void
+        wsn_Topo_onInterest(std::string& interest_name);
+
 		void
 		Location_onInterest(const ndn::InterestFilter& filter, const Interest& interest);
+
+        static void
+        wsn_Location_onInterest(std::string& interset_name);
+
+        static void
+        Wifi_onInterest(std::string& interest_name,const std::function<void(const std::shared_ptr<Face>& )>& callback);
 
 		void
 		Wifi_Register_onInterest(const ndn::InterestFilter& filter, const Interest& interest);
 
         void
-        wifi_update_id_location(std::string& str);
+        wifi_update_id_location(std::string& str,std::string& user_id,std::string& location);
 
         void
         Wifi_Location_onInterest(const ndn::InterestFilter& filter, const Interest& interest);
 
+        static void
+        Wifi_Location_onInterest(std::string& interest_name);
+
         void
         Wifi_Topo_onInterest(const ndn::InterestFilter& filter, const Interest& interest);
 
-        void
+        static void
+        Wifi_Topo_onInterest(std::string interest_name);
+
+        static void
         nfd_location_onInterest(const ndn::InterestFilter& filter, const Interest& interest);
+
+
 
 		void
   		onRegisterFailed(const Name& prefix, const std::string& reason);
@@ -280,10 +315,10 @@ namespace nfd{
 		void 
 		manage_wsn_topo(serial_manager *sm);
 
-		void
+		static void
 		send_data(std::string ,std::string );
 
-	    void 
+	    static void
 		wait_data();
 
 		void
@@ -292,16 +327,16 @@ namespace nfd{
 		void
 		time_sync();
 
-		void 
+		static void
   		search_dataset(std::string In_Name);
 
-		bool 
+		static bool
   		search_dataset_position(std::string Interest,WsnData dataval);
 
-		bool
+		static  bool
   		search_dataset_time(std::string In_Name,WsnData dataval);
 
-		bool 
+		static bool
   		search_dataset_type(std::string In_Name,WsnData dataval);
 
 		void
@@ -322,43 +357,42 @@ namespace nfd{
 		void
   		onObtainFaceIdFailure(const std::string& message);
 		
-		ndn::Face m_face;
-		ndn::KeyChain m_keyChain;
+		static ndn::Face m_face;
+		static ndn::KeyChain m_keyChain;
 		ndn::nfd::Controller m_controller;
-		serial_manager m_serialManager;
+		static serial_manager m_serialManager;
 		boost::thread_group threadGroup;
-		std::map<std::string,std::set<std::string>> interest_list;
+		static std::map<std::string,std::set<std::string>> interest_list;
+        static std::queue<std::string> origin_wsn_interestname; //记录ｗｓｎ网络的兴趣包的名字，因为要将新的命名方式/NDN-IOT/...转化为旧的/wsn/.. 的命名方式，数据返回需要记录
 		boost::mutex mu;
 		boost::condition_variable_any data_ready;
 		boost::asio::io_service io; 
 		
 
-		boost::asio::steady_timer m_t;
+		static boost::asio::steady_timer m_t;
 		boost::asio::steady_timer m_tsync; //for time sync
-		int local_timestamp;
-		time_t globe_timestamp;
-		std::set<WsnData> data_set;
-		std::set<std::string> topo_data;
-		std::map<std::string,std::string> wsn_location_map;
-        std::map<std::string,std::string> wifi_location_map;
-		std::shared_ptr<Forwarder> m_forwarder;
+		static int local_timestamp;
+		static time_t globe_timestamp;
+		static std::set<WsnData> data_set;
+		static std::set<std::string> topo_data;
+		static std::map<std::string,std::string> wsn_location_map;
+        unsigned int wifi_num;
+        static std::map<std::string,std::pair<unsigned int,std::string>> wifi_location_map;
+		static std::shared_ptr<Forwarder> m_forwarder;
 //		std::string remote_name;
 //		std::string face_name;
 		int wsn_nodes;
-		bool handle_interest_busy;
+		static bool handle_interest_busy;
 //        std::map<std::pair<int,int>,int> routeweight_map;
 
-        double longitude;  //经度
-        double latitude;  //纬度
 
-        double leftdown_longitude;
-        double leftdown_latitude;
-        double rightup_longitude;
-        double rightup_latitude;
+
+        std::string gateway_area;
+
         std::unordered_map<std::string,std::string> ethface_map;
-
-
-        std::queue<std::string> receive_in_queue;
+        static  int  time_sync_count;
+        static std::queue<std::shared_ptr<boost::asio::steady_timer>> timer_queue;
+        static std::queue<std::string> receive_in_queue;
 
 
 	};

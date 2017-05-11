@@ -16,7 +16,7 @@ namespace nfd {
 
     std::ostream& operator << (std::ostream& output,const Coordinate& c)
     {
-        output<<"("<<std::setw(6)<<std::internal<<c.get_longitude()<<" , "<<std::setw(6)<<std::internal<<c.get_latitude()<<")";
+        output<<"("<<std::setw(10)<<std::internal<<std::to_string(c.get_longitude())<<","<<std::setw(10)<<std::internal<<std::to_string(c.get_latitude())<<")";
         return  output;
     }
 

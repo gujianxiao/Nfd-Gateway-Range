@@ -30,8 +30,8 @@
 
 namespace nfd {
     namespace gateway {
-        serial_manager::serial_manager(boost::condition_variable_any& m_data_ready) : datagotflag(0), total_read(0), top(0), bottom(0), data_flag(0),
-                                           thread_flag(1),data_ready(m_data_ready),globe_timestamp(0){
+        serial_manager::serial_manager() : datagotflag(0), total_read(0), top(0), bottom(0), data_flag(0),
+                                           thread_flag(1),globe_timestamp(0){
             try {
                 fdusb = open(USB_PATH_PORT, O_RDWR);
                 if (fdusb == -1) {
