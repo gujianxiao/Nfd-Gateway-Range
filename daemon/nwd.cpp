@@ -88,7 +88,12 @@ namespace nfd {
 
         threadGroup.create_thread(boost::bind(&Nwd::wsnPeriodFind,this)); //发现wsn网络
 
-        NdpInitialize(); //NDP初始化，发现邻居
+//        NdpInitialize(); //NDP初始化，发现邻居 （动态发现邻居)
+         //静态发现邻居
+        getNeighborsRange();  //邻居表初始化、更新
+        printNeighborsTable();  //打印邻居表
+        RoutingtableUpdate();  //更新路由表
+
 
         strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
         strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
