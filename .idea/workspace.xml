@@ -13,7 +13,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp" afterPath="$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/nwd.cpp" afterPath="$PROJECT_DIR$/daemon/nwd.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/nwd.hpp" afterPath="$PROJECT_DIR$/daemon/nwd.hpp" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -34,8 +33,8 @@
       <file leaf-file-name="Ndp-client.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/Ndp-client.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="242" column="38" lean-forward="false" selection-start-line="240" selection-start-column="7" selection-end-line="242" selection-end-column="38" />
+            <state relative-caret-position="318">
+              <caret line="239" column="40" lean-forward="false" selection-start-line="239" selection-start-column="7" selection-end-line="239" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -64,18 +63,18 @@
       <file leaf-file-name="nwd.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/nwd.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="94" column="38" lean-forward="true" selection-start-line="91" selection-start-column="8" selection-end-line="94" selection-end-column="38" />
+            <state relative-caret-position="347">
+              <caret line="99" column="61" lean-forward="false" selection-start-line="99" selection-start-column="61" selection-end-line="99" selection-end-column="61" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="location-route-strategy.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="location-route-strategy.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="149">
-              <caret line="349" column="1" lean-forward="true" selection-start-line="349" selection-start-column="1" selection-end-line="349" selection-end-column="1" />
+            <state relative-caret-position="257">
+              <caret line="355" column="5" lean-forward="true" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -101,11 +100,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="nwd.hpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="nwd.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/nwd.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="207" column="12" lean-forward="true" selection-start-line="207" selection-start-column="12" selection-end-line="207" selection-end-column="12" />
+            <state relative-caret-position="217">
+              <caret line="188" column="0" lean-forward="false" selection-start-line="188" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -163,8 +162,8 @@
       <find>NDNIO</find>
       <find>getNeighborsRange</find>
       <find>RoutingtableUpdate</find>
-      <find>printNeighborsTable</find>
       <find>wait</find>
+      <find>printNeighborsTable</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -189,9 +188,9 @@
         <option value="$PROJECT_DIR$/daemon/fw/forwarder.cpp" />
         <option value="$PROJECT_DIR$/daemon/mgmt/serial_manager.hpp" />
         <option value="$PROJECT_DIR$/daemon/fw/location-route-strategy.hpp" />
+        <option value="$PROJECT_DIR$/daemon/nwd.hpp" />
         <option value="$PROJECT_DIR$/daemon/nwd.cpp" />
         <option value="$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp" />
-        <option value="$PROJECT_DIR$/daemon/nwd.hpp" />
       </list>
     </option>
   </component>
@@ -498,7 +497,7 @@
       <workItem from="1493342144069" duration="23355000" />
       <workItem from="1493536692675" duration="22000" />
       <workItem from="1493536878337" duration="2686000" />
-      <workItem from="1493799227089" duration="98198000" />
+      <workItem from="1493799227089" duration="99539000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1490753093020</created>
@@ -801,11 +800,18 @@
       <option name="project" value="LOCAL" />
       <updated>1494471963207</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="实验测试版本，静态配置邻居">
+      <created>1494474519012</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1494474519012</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="239265000" />
+    <option name="totallyTimeSpent" value="240606000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="27" width="1602" height="874" extended-state="6" />
@@ -1216,34 +1222,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/daemon/nwd.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="188" column="0" lean-forward="false" selection-start-line="188" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/daemon/Ndp-client.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="242" column="38" lean-forward="false" selection-start-line="240" selection-start-column="7" selection-end-line="242" selection-end-column="38" />
+        <state relative-caret-position="318">
+          <caret line="239" column="40" lean-forward="false" selection-start-line="239" selection-start-column="7" selection-end-line="239" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/daemon/nwd.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="94" column="38" lean-forward="true" selection-start-line="91" selection-start-column="8" selection-end-line="94" selection-end-column="38" />
+        <state relative-caret-position="347">
+          <caret line="99" column="61" lean-forward="false" selection-start-line="99" selection-start-column="61" selection-end-line="99" selection-end-column="61" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="349" column="1" lean-forward="true" selection-start-line="349" selection-start-column="1" selection-end-line="349" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/daemon/nwd.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="207" column="12" lean-forward="true" selection-start-line="207" selection-start-column="12" selection-end-line="207" selection-end-column="12" />
+        <state relative-caret-position="257">
+          <caret line="355" column="5" lean-forward="true" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
           <folding />
         </state>
       </provider>

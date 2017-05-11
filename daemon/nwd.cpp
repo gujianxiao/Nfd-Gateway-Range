@@ -90,6 +90,7 @@ namespace nfd {
 
 //        NdpInitialize(); //NDP初始化，发现邻居 （动态发现邻居)
          //静态发现邻居
+        neighbors_list.clear();  //清空邻居表
         getNeighborsRange();  //邻居表初始化、更新
         printNeighborsTable();  //打印邻居表
         RoutingtableUpdate();  //更新路由表
