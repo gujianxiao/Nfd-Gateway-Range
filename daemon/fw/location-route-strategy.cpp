@@ -270,7 +270,7 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
         timer_queue.push(timer_ptr);
     }
 
-    printRouteTable();
+//    printRouteTable();
     return  ret;
 
 }
@@ -337,7 +337,7 @@ void LocationRouteStrategy::Interest_Expiry(shared_ptr<pit::Entry> pitEntry,cons
                 this->sendInterest(pitEntry, itr.second);
             }
         }
-        printRouteTable();
+//        printRouteTable();
     }
     timer_queue.pop();
 
@@ -353,6 +353,7 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
 {
     std::cout<<"******************************************************************"<<std::endl;
     std::cout<<"receive a NDN-IOT location Interest :  "<<++recv_interest_num<<std::endl;
+    std::cout<<"收到NDN-IOT data:  "<<recv_data_num<<std::endl;
     if (hasPendingOutRecords(*pitEntry)) {
     // not a new Interest, don't forward
         return;
@@ -426,6 +427,8 @@ LocationRouteStrategy::beforeExpirePendingInterest(shared_ptr<pit::Entry> pitEnt
 {
     std::cout<<"******************************************************************"<<std::endl;
     std::cout<<"pit条目："<<pitEntry->getName()<<"失效"<<std::endl;
+    std::cout<<"receive a NDN-IOT location Interest :  "<<recv_interest_num<<std::endl;
+    std::cout<<"收到NDN-IOT data:  "<<recv_data_num<<std::endl;
     std::string leftdown_point_x, leftdown_point_y;
     std::string rightup_point_x,rightup_point_y;
 
@@ -451,7 +454,7 @@ LocationRouteStrategy::beforeExpirePendingInterest(shared_ptr<pit::Entry> pitEnt
             itr->second.set_sendstatus(gateway::RouteTableEntry::notsending);
         }
     }
-    printRouteTable();
+//    printRouteTable();
     std::cout<<"******************************************************************"<<std::endl;
 
 }
@@ -518,7 +521,7 @@ LocationRouteStrategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
 
         }
     }
-    printRouteTable();
+//    printRouteTable();
     std::cout<<"******************************************************************"<<std::endl;
 
 

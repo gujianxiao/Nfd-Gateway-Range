@@ -26,7 +26,7 @@ namespace nfd {
     std::map<std::string,std::pair<unsigned int,std::string>> Nwd::wifi_location_map;
     int Nwd::local_timestamp(0);
     std::queue<std::string> Nwd::receive_in_queue;
-    double Nwd::leftdown_longitude(116.364043),Nwd::leftdown_latitude(39.964516),Nwd::rightup_longitude(116.365911),Nwd::rightup_latitude(39.967447);
+    double Nwd::leftdown_longitude(116.362260),Nwd::leftdown_latitude(39.964100),Nwd::rightup_longitude(116.363760),Nwd::rightup_latitude(39.967130);
     double Nwd::longitude((leftdown_longitude+rightup_longitude)/2),Nwd::latitude((leftdown_latitude+rightup_latitude)/2) ;//网关经纬度
     std::queue<std::string> Nwd::origin_wsn_interestname;
     std::shared_ptr<Forwarder> Nwd::m_forwarder;
