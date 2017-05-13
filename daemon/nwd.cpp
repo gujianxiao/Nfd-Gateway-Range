@@ -96,7 +96,7 @@ namespace nfd {
         RoutingtableUpdate();  //更新路由表
 
 
-        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
+//        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
         strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
 
     	m_face.processEvents();

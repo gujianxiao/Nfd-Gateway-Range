@@ -105,7 +105,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
-  ++m_counters.nInInterests;
+  std::cout<<"收到Interest总数　："<<++m_counters.nInInterests<<std::endl;
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
@@ -377,7 +377,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //  m_t.async_wait([&](const boost::system::error_code& ec){
 
   data.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
-  ++m_counters.nInData;
+  std::cout<<"收到Data总数　："<<++m_counters.nInData<<std::endl;
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&

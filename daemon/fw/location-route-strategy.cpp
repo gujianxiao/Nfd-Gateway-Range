@@ -352,7 +352,7 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
                                         shared_ptr<pit::Entry> pitEntry)
 {
     std::cout<<"******************************************************************"<<std::endl;
-    std::cout<<"receive a NDN-IOT location Interest :  "<<++recv_interest_num<<std::endl;
+    std::cout<<"receive a NDN-IOT  Interest :  "<<++recv_interest_num<<std::endl;
     std::cout<<"收到NDN-IOT data:  "<<recv_data_num<<std::endl;
     if (hasPendingOutRecords(*pitEntry)) {
     // not a new Interest, don't forward
