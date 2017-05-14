@@ -251,7 +251,8 @@ private:
 
   std::vector<Data> data_vec;
   ndn::Face m_face;
-  boost::asio::steady_timer m_t; //add by ywb
+  unsigned int inInterest_count;   //add by ywb
+  unsigned int inData_count;
 
 
   // allow Strategy (base class) to enter pipelines

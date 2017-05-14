@@ -1219,19 +1219,35 @@ namespace nfd {
   void
   Nwd::send_data(std::string In_Name,std::string data_val)
   {
-      std::string origin_name=origin_wsn_interestname.front();//转化为新的数据命名方式，使用队列来保存的兴趣包名字，现在只是先进先出，以后做数据包名字的转换
-      origin_wsn_interestname.pop();
-      Name dataName(origin_name);
-	  
-	  shared_ptr<Data> data = make_shared<Data>();
-      data->setName(dataName);
-      data->setFreshnessPeriod(time::seconds(10));
-      data->setContent(reinterpret_cast<const uint8_t*>(data_val.c_str()), data_val.size());
-	  m_keyChain.sign(*data);
+      std::string last_name; //记录上一个兴趣包的名字
+      while(!origin_wsn_interestname.empty()){
+          std::string origin_name=origin_wsn_interestname.front();//转化为新的数据命名方式，使用队列来保存的兴趣包名字，现在只是先进先出，以后做数据包名字的转换
+          if(last_name =="")
+              last_name=origin_name;
+          else if(last_name != origin_name)
+          {
+              break;
+          }
+          else{
+                origin_wsn_interestname.pop();
+                break;
+          }
 
-	  std::cout << ">> D: " << *data << std::endl;
-      m_face.put(*data);
-	  interest_list.erase(In_Name); //delete the Interest stored in interest_list
+
+          origin_wsn_interestname.pop();
+          Name dataName(origin_name);
+
+          shared_ptr<Data> data = make_shared<Data>();
+          data->setName(dataName);
+          data->setFreshnessPeriod(time::seconds(10));
+          data->setContent(reinterpret_cast<const uint8_t*>(data_val.c_str()), data_val.size());
+          m_keyChain.sign(*data);
+
+          std::cout << ">> D: " << *data << std::endl;
+          m_face.put(*data);
+          interest_list.erase(In_Name); //delete the Interest stored in interest_list
+      }
+
   }
 
   void 

@@ -12,7 +12,7 @@
     <list default="true" id="3b79783e-e1d7-439b-b592-3525c7adf75a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/fw/forwarder.cpp" afterPath="$PROJECT_DIR$/daemon/fw/forwarder.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp" afterPath="$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/fw/forwarder.hpp" afterPath="$PROJECT_DIR$/daemon/fw/forwarder.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/daemon/nwd.cpp" afterPath="$PROJECT_DIR$/daemon/nwd.cpp" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,8 +44,18 @@
       <file leaf-file-name="nwd.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/daemon/nwd.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="99" column="9" lean-forward="false" selection-start-line="99" selection-start-column="9" selection-end-line="99" selection-end-column="9" />
+            <state relative-caret-position="378">
+              <caret line="99" column="7" lean-forward="false" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="nfd.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/daemon/nfd.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -54,8 +64,8 @@
       <file leaf-file-name="forwarder.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/fw/forwarder.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="373" column="62" lean-forward="true" selection-start-line="373" selection-start-column="62" selection-end-line="373" selection-end-column="62" />
+            <state relative-caret-position="437">
+              <caret line="114" column="31" lean-forward="false" selection-start-line="114" selection-start-column="31" selection-end-line="114" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -64,8 +74,8 @@
       <file leaf-file-name="forwarder.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/fw/forwarder.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="237" column="16" lean-forward="false" selection-start-line="237" selection-start-column="16" selection-end-line="237" selection-end-column="16" />
+            <state relative-caret-position="212">
+              <caret line="253" column="47" lean-forward="false" selection-start-line="253" selection-start-column="47" selection-end-line="253" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -84,8 +94,8 @@
       <file leaf-file-name="location-route-strategy.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="354" column="34" lean-forward="false" selection-start-line="354" selection-start-column="34" selection-end-line="354" selection-end-column="34" />
+            <state relative-caret-position="149">
+              <caret line="373" column="51" lean-forward="true" selection-start-line="373" selection-start-column="51" selection-end-line="373" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -101,31 +111,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="coordinate.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/daemon/coordinate.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="20" column="136" lean-forward="false" selection-start-line="20" selection-start-column="136" selection-end-line="20" selection-end-column="136" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="nwd.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/daemon/nwd.hpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="239">
-              <caret line="190" column="8" lean-forward="false" selection-start-line="190" selection-start-column="8" selection-end-line="190" selection-end-column="8" />
+              <caret line="369" column="42" lean-forward="false" selection-start-line="369" selection-start-column="39" selection-end-line="369" selection-end-column="42" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="coordinate.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/daemon/coordinate.h">
+      <file leaf-file-name="nfd.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/daemon/nfd.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="29" column="32" lean-forward="false" selection-start-line="29" selection-start-column="32" selection-end-line="29" selection-end-column="32" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -135,8 +135,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>data_ready</find>
-      <find>getNeighborsCoordinate</find>
       <find>self</find>
       <find>rec</find>
       <find>wifi_on</find>
@@ -147,7 +145,6 @@
       <find>m_face</find>
       <find>search</find>
       <find>receive_in_queue</find>
-      <find>m_t</find>
       <find>timer</find>
       <find>wsn_on</find>
       <find>timer_queue</find>
@@ -161,10 +158,13 @@
       <find>rangedistance</find>
       <find>weight</find>
       <find>printNeighborsTable</find>
-      <find>RoutingtableUpdate</find>
       <find>ndn</find>
       <find>Wifi_onInterest</find>
+      <find>RoutingtableUpdate</find>
       <find>printR</find>
+      <find>m_t</find>
+      <find>NDNIOT</find>
+      <find>ori</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -190,9 +190,10 @@
         <option value="$PROJECT_DIR$/daemon/fw/location-route-strategy.hpp" />
         <option value="$PROJECT_DIR$/daemon/nwd.hpp" />
         <option value="$PROJECT_DIR$/daemon/coordinate.h" />
-        <option value="$PROJECT_DIR$/daemon/nwd.cpp" />
         <option value="$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp" />
+        <option value="$PROJECT_DIR$/daemon/fw/forwarder.hpp" />
         <option value="$PROJECT_DIR$/daemon/fw/forwarder.cpp" />
+        <option value="$PROJECT_DIR$/daemon/nwd.cpp" />
       </list>
     </option>
   </component>
@@ -499,7 +500,7 @@
       <workItem from="1493342144069" duration="23355000" />
       <workItem from="1493536692675" duration="22000" />
       <workItem from="1493536878337" duration="2686000" />
-      <workItem from="1493799227089" duration="108930000" />
+      <workItem from="1493799227089" duration="116987000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1490753093020</created>
@@ -823,11 +824,18 @@
       <option name="project" value="LOCAL" />
       <updated>1494531190981</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="NLSR 测试版">
+      <created>1494679833700</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1494679833700</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="249997000" />
+    <option name="totallyTimeSpent" value="258054000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="27" width="1602" height="874" extended-state="6" />
@@ -880,7 +888,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="邻居表修改需要重新计算最小点" />
     <MESSAGE value="修改定时器取消，无法修改状态问题" />
     <MESSAGE value="修改不可达判断条件" />
     <MESSAGE value="修改不可达判断条件,bug修改" />
@@ -905,7 +912,8 @@
     <MESSAGE value="实验测试版本，添加记录收到的Interest,data包数" />
     <MESSAGE value="实验测试版本，静态配置邻居" />
     <MESSAGE value="实验测试版本，深夜版" />
-    <option name="LAST_COMMIT_MESSAGE" value="实验测试版本，深夜版" />
+    <MESSAGE value="NLSR 测试版" />
+    <option name="LAST_COMMIT_MESSAGE" value="NLSR 测试版" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1222,26 +1230,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/daemon/nwd.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="190" column="8" lean-forward="false" selection-start-line="190" selection-start-column="8" selection-end-line="190" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/daemon/range.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="11" column="158" lean-forward="false" selection-start-line="11" selection-start-column="158" selection-end-line="11" selection-end-column="158" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/daemon/fw/forwarder.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="237" column="16" lean-forward="false" selection-start-line="237" selection-start-column="16" selection-end-line="237" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -1254,26 +1246,58 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/daemon/nfd.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/daemon/fw/location-route-strategy.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="354" column="34" lean-forward="false" selection-start-line="354" selection-start-column="34" selection-end-line="354" selection-end-column="34" />
+        <state relative-caret-position="149">
+          <caret line="373" column="51" lean-forward="true" selection-start-line="373" selection-start-column="51" selection-end-line="373" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/daemon/fw/forwarder.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="253" column="47" lean-forward="false" selection-start-line="253" selection-start-column="47" selection-end-line="253" selection-end-column="47" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/daemon/fw/forwarder.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="373" column="62" lean-forward="true" selection-start-line="373" selection-start-column="62" selection-end-line="373" selection-end-column="62" />
+        <state relative-caret-position="437">
+          <caret line="114" column="31" lean-forward="false" selection-start-line="114" selection-start-column="31" selection-end-line="114" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/daemon/nfd.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/daemon/nwd.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="369" column="42" lean-forward="false" selection-start-line="369" selection-start-column="39" selection-end-line="369" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/daemon/nwd.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="99" column="9" lean-forward="false" selection-start-line="99" selection-start-column="9" selection-end-line="99" selection-end-column="9" />
+        <state relative-caret-position="378">
+          <caret line="99" column="7" lean-forward="false" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
           <folding />
         </state>
       </provider>

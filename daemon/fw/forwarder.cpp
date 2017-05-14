@@ -42,7 +42,9 @@ Forwarder::Forwarder()
   , m_pit(m_nameTree)
   , m_measurements(m_nameTree)
   , m_strategyChoice(m_nameTree, fw::makeDefaultStrategy(*this))
-  , m_t(m_face.getIoService())
+  , inInterest_count(0)
+  , inData_count(0)
+
 {
   fw::installStrategies(*this);
 }
@@ -105,7 +107,14 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
-  std::cout<<"收到Interest总数　："<<++m_counters.nInInterests<<std::endl;
+  ++m_counters.nInInterests;
+
+  //modifide by ywb
+    std::ostringstream os;
+    os<<interest.getName();
+    if(os.str().find("/NDN-IOT/") != std::string::npos)
+        std::cout<<"收到Interest个数　:"<<++inInterest_count<<std::endl;
+
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
@@ -376,8 +385,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //  m_t.expires_from_now(std::chrono::milliseconds(10));
 //  m_t.async_wait([&](const boost::system::error_code& ec){
 
+    //modifide by ywb
+   std::ostringstream os;
+   os<<data.getName();
+   if(os.str().find("/NDN-IOT/") != std::string::npos)
+        std::cout<<"收到Data个数　:"<<++inData_count<<std::endl;
   data.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
-  std::cout<<"收到Data总数　："<<++m_counters.nInData<<std::endl;
+  ++m_counters.nInData;
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
