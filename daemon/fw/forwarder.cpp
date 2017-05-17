@@ -113,7 +113,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
     std::ostringstream os;
     os<<interest.getName();
     if(os.str().find("/NDN-IOT/") != std::string::npos)
-        std::cout<<"收到Interest个数　:"<<++inInterest_count<<std::endl;
+        std::cout<<"收到/NDN-IOT/Interest个数　:"<<++inInterest_count<<std::endl;
 
 
   // /localhost scope control
@@ -389,7 +389,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
    std::ostringstream os;
    os<<data.getName();
    if(os.str().find("/NDN-IOT/") != std::string::npos)
-        std::cout<<"收到Data个数　:"<<++inData_count<<std::endl;
+        std::cout<<"收到/NDN-IOT/ Data个数　:"<<++inData_count<<std::endl;
   data.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInData;
 

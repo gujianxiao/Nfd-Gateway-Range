@@ -352,8 +352,8 @@ LocationRouteStrategy::afterReceiveInterest(const Face& inFace,
                                         shared_ptr<pit::Entry> pitEntry)
 {
     std::cout<<"******************************************************************"<<std::endl;
-    std::cout<<"receive a NDN-IOT  Interest :  "<<++recv_interest_num<<std::endl;
-    std::cout<<"收到NDN-IOT data:  "<<recv_data_num<<std::endl;
+    std::cout<<"转发策略　receive a NDN-IOT  Interest :  "<<++recv_interest_num<<std::endl;
+    std::cout<<"转发策略　收到NDN-IOT data:  "<<recv_data_num<<std::endl;
     if (hasPendingOutRecords(*pitEntry)) {
     // not a new Interest, don't forward
         return;
@@ -427,8 +427,8 @@ LocationRouteStrategy::beforeExpirePendingInterest(shared_ptr<pit::Entry> pitEnt
 {
     std::cout<<"******************************************************************"<<std::endl;
     std::cout<<"pit条目："<<pitEntry->getName()<<"失效"<<std::endl;
-    std::cout<<"receive a NDN-IOT location Interest :  "<<recv_interest_num<<std::endl;
-    std::cout<<"收到NDN-IOT data:  "<<recv_data_num<<std::endl;
+    std::cout<<"转发策略　receive a NDN-IOT location Interest :  "<<recv_interest_num<<std::endl;
+    std::cout<<"转发策略　收到NDN-IOT data:  "<<recv_data_num<<std::endl;
     std::string leftdown_point_x, leftdown_point_y;
     std::string rightup_point_x,rightup_point_y;
 
@@ -479,7 +479,7 @@ void
 LocationRouteStrategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
                           const Face& inFace, const Data& data)
 {
-    std::cout<<"收到NDN-IOT data:  "<<++recv_data_num<<std::endl;
+    std::cout<<"转发策略　收到NDN-IOT data:  "<<++recv_data_num<<std::endl;
     std::string leftdown_point_x, leftdown_point_y;
     std::string rightup_point_x,rightup_point_y;
 
