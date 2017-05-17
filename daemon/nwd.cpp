@@ -68,10 +68,12 @@ namespace nfd {
 //                                 ndn::RegisterPrefixSuccessCallback(),
 //                                 bind(&Nwd::onRegisterFailed, this, _1, _2));
 
-        m_face.setInterestFilter("/NDN-IOT/"+gateway_area,
-                                 bind(&Nwd::nfd_location_onInterest,  _1, _2),
-                                 ndn::RegisterPrefixSuccessCallback(),
-                                 bind(&Nwd::onRegisterFailed, this, _1, _2));
+//        m_face.setInterestFilter("/NDN-IOT/",
+//                                 bind(&Nwd::nfd_location_onInterest,  _1, _2),
+//                                 ndn::RegisterPrefixSuccessCallback(),
+//                                 bind(&Nwd::onRegisterFailed, this, _1, _2));
+
+
 
 		getEthernetFace(); //获取本地网址
 		for(auto itr:ethface_map)
@@ -96,7 +98,7 @@ namespace nfd {
         RoutingtableUpdate();  //更新路由表
 
 
-//        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
+        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
         strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
 
     	m_face.processEvents();
@@ -485,7 +487,24 @@ namespace nfd {
             } else if (interest_name.find("topo") != std::string::npos) {
                 Wifi_Topo_onInterest(interest_name);
             } else{
-                Wifi_onInterest(interest_name,callback);
+                //Wifi_onInterest(interest_name,callback);
+
+                Name dataName(interest_name);
+
+                dataName
+                    .append("testApp") // add "testApp" component to Interest name
+                    .appendVersion();  // add "version" component (current UNIX timestamp in milliseconds)
+
+                static const std::string content = "HELLO KITTY1111";
+
+                shared_ptr<Data> data = make_shared<Data>();
+                data->setName(dataName);
+                data->setFreshnessPeriod(time::seconds(10));
+                data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
+                m_keyChain.sign(*data);
+
+                std::cout << ">> D: " << *data << std::endl;
+                m_face.put(*data);
             }
 
         }
