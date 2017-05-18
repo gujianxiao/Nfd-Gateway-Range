@@ -161,7 +161,13 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
         if( unreachable_flag )
         {
             std::cout << "目标不可达" << std::endl;
-            return ret;   //返回空的结果
+            for(auto itr:gateway::Nwd::neighbors_list) {  //需要洪泛
+                if(itr.first != gateway::Nwd::get_SelfRange()) {
+//                std::cout<<itr.first<<std::endl;
+                    ret.push_back(itr.second);
+                }
+            }
+            return ret;   //返回
         }
 
         //查询是否存在可达路径
@@ -253,10 +259,12 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
     }
     else   //不是局部最小点，根据贪心策略发送
     {
-        ret.push_back(minface);
-        route_table_itr->second.set_sendstatus(gateway::RouteTableEntry::sending);  //将发送的接face设置为sending
+        gateway::Range tmp;
+        if(!(minnexthop == tmp)){   //保证minface不为空
+            ret.push_back(minface);
+            route_table_itr->second.set_sendstatus(gateway::RouteTableEntry::sending);  //将发送的接face设置为sending
 
-        //启动定时器，避免用户端超时
+            //启动定时器，避免用户端超时
 //        pit::InRecordCollection::iterator lastExpiring =
 //                std::max_element(pitEntry->in_begin(), pitEntry->in_end(), [&](const pit::InRecord& a, const pit::InRecord& b){
 //                    return a.getExpiry() < b.getExpiry();
@@ -264,10 +272,11 @@ LocationRouteStrategy::cal_Nexthos(gateway::Range& dest,shared_ptr<pit::Entry> p
 //
 //        time::steady_clock::TimePoint lastExpiry = lastExpiring->getExpiry();
 //        time::nanoseconds lastExpiryFromNow = lastExpiry - time::steady_clock::now();
-        std::shared_ptr<boost::asio::steady_timer> timer_ptr(new boost::asio::steady_timer(getGlobalIoService()));
-        timer_ptr->expires_from_now(std::chrono::milliseconds(1600));
-        timer_ptr->async_wait(boost::bind(&LocationRouteStrategy::Interest_Expiry,this,pitEntry,boost::asio::placeholders::error));
-        timer_queue.push(timer_ptr);
+            std::shared_ptr<boost::asio::steady_timer> timer_ptr(new boost::asio::steady_timer(getGlobalIoService()));
+            timer_ptr->expires_from_now(std::chrono::milliseconds(1600));
+            timer_ptr->async_wait(boost::bind(&LocationRouteStrategy::Interest_Expiry,this,pitEntry,boost::asio::placeholders::error));
+            timer_queue.push(timer_ptr);
+        }
     }
 
 //    printRouteTable();

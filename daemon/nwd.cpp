@@ -98,7 +98,7 @@ namespace nfd {
         RoutingtableUpdate();  //更新路由表
 
 
-//        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
+        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
 //        strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
 
     	m_face.processEvents();
@@ -482,10 +482,6 @@ namespace nfd {
 
                 Name dataName(interest_name);
 
-                dataName
-                .append("testApp") // add "testApp" component to Interest name
-                .appendVersion();  // add "version" component (current UNIX timestamp in milliseconds)
-
                 static const std::string content = "HELLO KITTY1111";
 
                 shared_ptr<Data> data = make_shared<Data>();
@@ -507,10 +503,6 @@ namespace nfd {
                 //Wifi_onInterest(interest_name,callback);
 
                 Name dataName(interest_name);
-
-                dataName
-                    .append("testApp") // add "testApp" component to Interest name
-                    .appendVersion();  // add "version" component (current UNIX timestamp in milliseconds)
 
                 static const std::string content = "HELLO KITTY1111";
 

@@ -118,7 +118,11 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
         std::cout<<"收到/NDN-IOT/Interest个数　:"<<++inInterest_count<<std::endl;
 
   if(os.str().find("NLSR") != std::string::npos || os.str().find("nlsr") != std::string::npos )
+  {
       std::cout<<"收到NLSR Interest个数　:"<<++inInterest_count_nlsr<<std::endl;
+//      std::cout<<os.str()<<std::endl;
+  }
+
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
                               scope_prefix::LOCALHOST.isPrefixOf(interest.getName());
