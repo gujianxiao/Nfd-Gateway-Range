@@ -98,8 +98,8 @@ namespace nfd {
         RoutingtableUpdate();  //更新路由表
 
 
-        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
-        strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
+//        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
+//        strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
 
     	m_face.processEvents();
 		
@@ -478,7 +478,24 @@ namespace nfd {
             } else if (interest_name.find("topo") != std::string::npos) {
                 wsn_Topo_onInterest(interest_name);
             } else {
-                wsn_onInterest(interest_name);
+               // wsn_onInterest(interest_name);
+
+                Name dataName(interest_name);
+
+                dataName
+                .append("testApp") // add "testApp" component to Interest name
+                .appendVersion();  // add "version" component (current UNIX timestamp in milliseconds)
+
+                static const std::string content = "HELLO KITTY1111";
+
+                shared_ptr<Data> data = make_shared<Data>();
+                data->setName(dataName);
+                data->setFreshnessPeriod(time::seconds(10));
+                data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
+                m_keyChain.sign(*data);
+
+                std::cout << ">> D: " << *data << std::endl;
+                m_face.put(*data);
             }
 
         } else if (interest_name.find("wifi") != std::string::npos) {

@@ -44,6 +44,8 @@ Forwarder::Forwarder()
   , m_strategyChoice(m_nameTree, fw::makeDefaultStrategy(*this))
   , inInterest_count(0)
   , inData_count(0)
+  , inInterest_count_nlsr(0)
+  , inData_count_nlsr(0)
 
 {
   fw::installStrategies(*this);
@@ -110,12 +112,13 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   ++m_counters.nInInterests;
 
   //modifide by ywb
-    std::ostringstream os;
-    os<<interest.getName();
-    if(os.str().find("/NDN-IOT/") != std::string::npos)
+  std::ostringstream os;
+  os<<interest.getName();
+  if(os.str().find("/NDN-IOT/") != std::string::npos)
         std::cout<<"收到/NDN-IOT/Interest个数　:"<<++inInterest_count<<std::endl;
 
-
+  if(os.str().find("NLSR") != std::string::npos || os.str().find("nlsr") != std::string::npos )
+      std::cout<<"收到NLSR Interest个数　:"<<++inInterest_count_nlsr<<std::endl;
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
                               scope_prefix::LOCALHOST.isPrefixOf(interest.getName());
@@ -390,6 +393,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
    os<<data.getName();
    if(os.str().find("/NDN-IOT/") != std::string::npos)
         std::cout<<"收到/NDN-IOT/ Data个数　:"<<++inData_count<<std::endl;
+
+   if(os.str().find("NLSR") != std::string::npos || os.str().find("nlsr") != std::string::npos  )
+        std::cout<<"收到NLSR Data个数　:"<<++inData_count_nlsr<<std::endl;
+
   data.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInData;
 

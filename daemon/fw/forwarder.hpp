@@ -253,9 +253,11 @@ private:
   ndn::Face m_face;
   unsigned int inInterest_count;   //add by ywb
   unsigned int inData_count;
+  unsigned int inInterest_count_nlsr;
+  unsigned int inData_count_nlsr;
 
 
-  // allow Strategy (base class) to enter pipelines
+        // allow Strategy (base class) to enter pipelines
   friend class fw::Strategy;
 };
 
