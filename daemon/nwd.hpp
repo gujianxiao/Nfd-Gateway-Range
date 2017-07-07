@@ -261,7 +261,7 @@ namespace nfd{
   		onInterest(const ndn::InterestFilter& filter, const Interest& interest);
 
         static void
-        getRangeLocation_Time_DataType(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y,std::string& start_time,std::string& end_time,std::string& datatype);
+        getRangeLocation_Time_DataType(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y,std::string& start_time,std::string& end_time,std::string& datatype, std::string& space_time);
 
         static void
         wsn_onInterest(std::string interest_name);

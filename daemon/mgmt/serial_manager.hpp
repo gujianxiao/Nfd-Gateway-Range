@@ -80,6 +80,7 @@ namespace nfd {
             location ability;
             period time_period;
             uint16_t dataType;
+            char space_time[4];
         } interest_name;//10B --> 14B
 
         typedef struct message {

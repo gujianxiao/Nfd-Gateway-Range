@@ -478,20 +478,20 @@ namespace nfd {
             } else if (interest_name.find("topo") != std::string::npos) {
                 wsn_Topo_onInterest(interest_name);
             } else {
-               // wsn_onInterest(interest_name);
+                wsn_onInterest(interest_name);
 
-                Name dataName(interest_name);
-
-                static const std::string content = "HELLO KITTY1111";
-
-                shared_ptr<Data> data = make_shared<Data>();
-                data->setName(dataName);
-                data->setFreshnessPeriod(time::seconds(10));
-                data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
-                m_keyChain.sign(*data);
-
-                std::cout << ">> D: " << *data << std::endl;
-                m_face.put(*data);
+//                Name dataName(interest_name);
+//
+//                static const std::string content = "HELLO KITTY1111";
+//
+//                shared_ptr<Data> data = make_shared<Data>();
+//                data->setName(dataName);
+//                data->setFreshnessPeriod(time::seconds(10));
+//                data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
+//                m_keyChain.sign(*data);
+//
+//                std::cout << ">> D: " << *data << std::endl;
+//                m_face.put(*data);
             }
 
         } else if (interest_name.find("wifi") != std::string::npos) {
@@ -500,20 +500,20 @@ namespace nfd {
             } else if (interest_name.find("topo") != std::string::npos) {
                 Wifi_Topo_onInterest(interest_name);
             } else{
-                //Wifi_onInterest(interest_name,callback);
+                Wifi_onInterest(interest_name,callback);
 
-                Name dataName(interest_name);
-
-                static const std::string content = "HELLO KITTY1111";
-
-                shared_ptr<Data> data = make_shared<Data>();
-                data->setName(dataName);
-                data->setFreshnessPeriod(time::seconds(10));
-                data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
-                m_keyChain.sign(*data);
-
-                std::cout << ">> D: " << *data << std::endl;
-                m_face.put(*data);
+//                Name dataName(interest_name);
+//
+//                static const std::string content = "HELLO KITTY1111";
+//
+//                shared_ptr<Data> data = make_shared<Data>();
+//                data->setName(dataName);
+//                data->setFreshnessPeriod(time::seconds(10));
+//                data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
+//                m_keyChain.sign(*data);
+//
+//                std::cout << ">> D: " << *data << std::endl;
+//                m_face.put(*data);
             }
 
         }
@@ -1037,7 +1037,7 @@ namespace nfd {
   	}
 
     void
-    Nwd::getRangeLocation_Time_DataType(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y,std::string& start_time,std::string& end_time,std::string& datatype)
+    Nwd::getRangeLocation_Time_DataType(std::string interest_name,std::string& leftdown_point_x,std::string& leftdown_point_y,std::string& rightup_point_x,std::string& rightup_point_y,std::string& start_time,std::string& end_time,std::string& datatype, std::string& space_time)
     {
         std::string::size_type left_x_start=interest_name.find('/',1);
         std::string::size_type left_x_end = interest_name.find('/',left_x_start+1);
@@ -1056,11 +1056,16 @@ namespace nfd {
         std::string::size_type end_time_end = interest_name.find('/',end_time_begin+1);
         std::string::size_type data_type_start = end_time_end;
         std::string::size_type data_type_end = interest_name.find('/',data_type_start+1);
+        std::string::size_type netid_start=data_type_end;
+        std::string::size_type netid_end=interest_name.find('/',netid_start+1);
+        std::string::size_type space_time_start = netid_end;
+        std::string::size_type space_time_end = interest_name.find('/',space_time_start+1);
         rightup_point_x=interest_name.substr(right_x_start+1,right_x_end-right_x_start-1);
         rightup_point_y=interest_name.substr(right_y_start+1,right_y_end-right_y_start-1);
         start_time=interest_name.substr(start_time_begin+1,start_time_end-start_time_begin-1);
         end_time=interest_name.substr(end_time_begin+1,end_time_end-end_time_begin-1);
         datatype=interest_name.substr(data_type_start+1,data_type_end-data_type_start-1);
+        space_time=interest_name.substr(space_time_start+1,space_time_end-space_time_start-1);
     }
 
 
@@ -1079,15 +1084,17 @@ namespace nfd {
         std::string rightup_point_x,rightup_point_y;
         std::string start_time,end_time;
         std::string datatype;
-        getRangeLocation_Time_DataType(interest_name, leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y,start_time,end_time,datatype);
-
+        std::string space_time;
+        getRangeLocation_Time_DataType(interest_name, leftdown_point_x, leftdown_point_y, rightup_point_x,rightup_point_y,start_time,end_time,datatype,space_time);
+        std::cout<<"space_time is "<<space_time<<std::endl;
+        std::cout<<"data type is :"<<datatype<<std::endl;
         wsn_splite_location(leftdown_point_x);
         wsn_splite_location(leftdown_point_y);
         wsn_splite_location(rightup_point_x);
         wsn_splite_location(rightup_point_y);
 
 
-        interest_name="wsn/"+leftdown_point_x+","+rightup_point_y+"/"+rightup_point_x+","+leftdown_point_y+"/"+start_time+"/"+end_time+"/"+datatype;  //转化成左下右上
+        interest_name="wsn/"+leftdown_point_x+","+rightup_point_y+"/"+rightup_point_x+","+leftdown_point_y+"/"+start_time+"/"+end_time+"/"+datatype+"/"+space_time;  //转化成左下右上
 //		std::string interest_copy=interest_name;
         interest_list.insert(std::make_pair(interest_name,std::set<std::string>()));
 
@@ -1105,6 +1112,7 @@ namespace nfd {
 
                     char tmp[1024];
                     strcpy(tmp, recv_in.c_str());
+                    std::cout<<"begin handle interest"<<std::endl;
                     m_serialManager.handle_interest(tmp);
                     receive_in_queue.pop();
 //                    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
@@ -1126,6 +1134,7 @@ namespace nfd {
   void
   Nwd::search_dataset(std::string In_Name){
   		std::string data_ret;
+//        std::cout<<"data_set size is"<<data_ret.size()<<std::endl;
 		for(auto &itr:data_set){
 			if(search_dataset_position(In_Name,itr)){
 				if(search_dataset_time(In_Name,itr)){
@@ -1134,16 +1143,18 @@ namespace nfd {
 						data_ret+=itr.data;
 						data_ret+="$$";
 					}
-
 				}
 			}
 		}
-		send_data(In_Name,data_ret);
+        std::cout<<"data is :"<<data_ret<<std::endl;
+        send_data(In_Name,data_ret);
   }
 
   bool
   Nwd::search_dataset_type(std::string In_Name,WsnData dataval){
-	std::string data_type = In_Name.substr(In_Name.rfind('/')+1);
+      std::string::size_type end_pos=In_Name.rfind('/');
+      std::string::size_type start_pos=In_Name.rfind('/',end_pos-1);
+      std::string data_type=In_Name.substr(start_pos+1,end_pos-start_pos-1);
 //	std::cout<<In_Name<<std::endl;
 //	std::cout<<data_type<<std::endl;
 	if(data_type == dataval.type){
@@ -1157,7 +1168,9 @@ namespace nfd {
   bool
   Nwd::search_dataset_time(std::string In_Name,WsnData dataval){
     std::string::size_type in_time_beg,in_time_mid,in_time_end;
+//    std::cout<<"In_name : "<<In_Name<<std::endl;
     in_time_end=In_Name.rfind('/');
+    in_time_end=In_Name.rfind('/',in_time_end-1);
 	in_time_mid=In_Name.rfind('/',in_time_end-1);
 	in_time_beg=In_Name.rfind('/',in_time_mid-1);
 
@@ -1190,6 +1203,8 @@ namespace nfd {
 		int in_rightdown_x=std::stoi(in_scope_rightdown.substr(0,in_scope_rightdown.find(',')));
 		int in_rightdown_y=std::stoi(in_scope_rightdown.substr(in_scope_rightdown.find(',')+1));
 
+//        std::cout<<"In :" <<in_leftup_x <<" "<<in_leftup_y <<" "<<in_rightdown_x <<" "<<in_rightdown_y<<std::endl;
+//        std::cout<<"dataval: "<<dataval.position_x<<" "<<dataval.position_y<<std::endl;
         if(dataval.position_x ==0 || dataval.position_y == 0)
             return  true;
 
@@ -1216,7 +1231,7 @@ namespace nfd {
   Nwd::listen_wsn_data(serial_manager *sm)
   {    
   	   sm->read_data(interest_list,wsn_location_map);
-	   
+
   }
 
   void

@@ -91,6 +91,7 @@ namespace nfd {
 		bool serial_manager::time_belong_interest(std::string Interest,int datatime){
 			std::string::size_type In_Start_Timepos,In_Middle_Timepos,In_End_Timepos;
 			In_End_Timepos=Interest.rfind('/');
+            In_End_Timepos=Interest.rfind('/',In_End_Timepos-1);
 			In_Middle_Timepos=Interest.rfind('/',In_End_Timepos-1);
 			In_Start_Timepos=Interest.rfind('/',In_Middle_Timepos-1);
 			int endtime=std::stoi(Interest.substr(In_Middle_Timepos+1,In_End_Timepos-In_Middle_Timepos-1));
@@ -104,7 +105,9 @@ namespace nfd {
 		}
 
 		bool serial_manager::datatype_equal_interest(std::string Interest,std::string datatype){
-			std::string In_Type=Interest.substr(Interest.rfind('/')+1);
+            std::string::size_type end_pos=Interest.rfind('/');
+            std::string::size_type start_pos=Interest.rfind('/',end_pos-1);
+			std::string In_Type=Interest.substr(start_pos+1,end_pos-start_pos-1);
 //			std::cout<<In_Type<<std::endl;
 			if(In_Type == datatype)
 				return true;
@@ -226,7 +229,7 @@ namespace nfd {
 						strcat(data_ret,content_buf);
 						printf("data_ret is %s\n",data_ret);
 
-//						std::cout<<"In_List size is"<<In_sList.size()<<std::endl;
+//						std::cout<<"In_List size is"<<In_List.size()<<std::endl;
 						for(auto& itr:In_List){
 							if(position_belong_interest(itr.first,recv_data->msgName.ability.leftUp.x,
 								recv_data->msgName.ability.leftUp.y)){
@@ -337,7 +340,7 @@ namespace nfd {
 
             if (strncmp(interest, "wsn", 3) == 0)  // interest may like "ints/3237,6311/3237,6311/t1/t2/light"
             {
-                char arg[7][20] = {0};
+                char arg[8][20] = {0};
                 int i = 0, j = 0, count = 0;
                 char *interest_msg = strstr(interest, "/");
                 //\u63d0\u53d6\u7ecf\u7eac\u5ea6\u5750\u6807\u548c\u8bf7\u6c42\u8d44\u6e90\u7c7b\u522b
@@ -356,7 +359,7 @@ namespace nfd {
                 name->ability.leftUp.y = atoi(arg[1]);
                 name->ability.rightDown.x = atoi(arg[2]);
                 name->ability.rightDown.y = atoi(arg[3]);
-				std::cout<<arg[4]<<" "<<arg[5]<<std::endl;
+				std::cout<<arg[4]<<" "<<arg[5]<<" "<<arg[6]<<std::endl;
 				std::cout<<"golbe time:"<<globe_timestamp<<std::endl;
 				if(atoi(arg[4])>=globe_timestamp  && atoi(arg[5]) >=globe_timestamp){
                 	name->time_period.start_time = atoi(arg[4])-(int)globe_timestamp; //transfor local telosb time
@@ -374,6 +377,11 @@ namespace nfd {
                     name->dataType = Temp;
                 if (!strcmp(arg[6], "humidity"))
                     name->dataType = Humidity;
+
+                for(unsigned int i=0;i<4;++i)
+                    name->space_time[i]=arg[7][i];
+
+
                 DEBUG printf("location is(%d, %d),(%d, %d)\n",
                              name->ability.leftUp.x, name->ability.leftUp.y, name->ability.rightDown.x,
                              name->ability.rightDown.y);
@@ -486,7 +494,8 @@ namespace nfd {
 
             packet->payload.content.msgType = type;
             memcpy(&(packet->payload.content.msgName), interest, sizeof(interest_name));
-
+            std::cout<<"interest name len is "<<sizeof(interest_name)<<std::endl;
+            std::cout<<"Msg len is "<< sizeof(Msg)<<std::endl;
             //packet->payload.content.data[0] = 0x01;
             //packet->payload.content.data[2] = 0xff;
             //packet->payload.content.data[3] = 0xff;
@@ -501,6 +510,7 @@ namespace nfd {
             while (loopflag) {
                 //\u901a\u8fc7\u4e32\u53e3\u53d1\u9001Interest
                 nread = write(fdusb, (char *) packet, sizeof(tinyosndw_packet));
+                std::cout<<"write "<< nread<<std::endl;
                 if (nread == -1) {
                     if (ARQ < 5) {
                         printf("write failed!!\n");
