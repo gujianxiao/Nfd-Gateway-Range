@@ -26,7 +26,7 @@ namespace nfd {
     std::map<std::string,std::pair<unsigned int,std::string>> Nwd::wifi_location_map;
     int Nwd::local_timestamp(0);
     std::queue<std::string> Nwd::receive_in_queue;
-    double Nwd::leftdown_longitude(116.362260),Nwd::leftdown_latitude(39.964100),Nwd::rightup_longitude(116.363760),Nwd::rightup_latitude(39.967130);
+    double Nwd::leftdown_longitude(116.371941),Nwd::leftdown_latitude(39.965684),Nwd::rightup_longitude(116.373782),Nwd::rightup_latitude(39.966930);
     double Nwd::longitude((leftdown_longitude+rightup_longitude)/2),Nwd::latitude((leftdown_latitude+rightup_latitude)/2) ;//网关经纬度
     std::queue<std::string> Nwd::origin_wsn_interestname;
     std::shared_ptr<Forwarder> Nwd::m_forwarder;
@@ -68,10 +68,10 @@ namespace nfd {
 //                                 ndn::RegisterPrefixSuccessCallback(),
 //                                 bind(&Nwd::onRegisterFailed, this, _1, _2));
 
-//        m_face.setInterestFilter("/NDN-IOT/",
-//                                 bind(&Nwd::nfd_location_onInterest,  _1, _2),
-//                                 ndn::RegisterPrefixSuccessCallback(),
-//                                 bind(&Nwd::onRegisterFailed, this, _1, _2));
+        m_face.setInterestFilter("/NDN-IOT/",
+                                 bind(&Nwd::nfd_location_onInterest,  _1, _2),
+                                 ndn::RegisterPrefixSuccessCallback(),
+                                 bind(&Nwd::onRegisterFailed, this, _1, _2));
 
 
 
@@ -98,7 +98,7 @@ namespace nfd {
         RoutingtableUpdate();  //更新路由表
 
 
-        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
+//        strategyChoiceSet("/NDN-IOT","ndn:/localhost/nfd/strategy/location-route");  //设置路由策略
 //        strategyChoiceSet("/NDN-WIFI","ndn:/localhost/nfd/strategy/broadcast");
 
     	m_face.processEvents();
@@ -422,6 +422,29 @@ namespace nfd {
             } else if(interest_name.find("topo") != std::string::npos)
             {
                 Wifi_Topo_onInterest(interest_name);
+            }else{
+                srand(std::time(NULL));
+                int rand_num= rand()%100;
+                if(rand_num <= 15)
+                {
+                    Name dataName(interest.getName());
+                    static const std::string content = "HELLO KITTY1111";
+//
+                    // Create Data packet
+                    shared_ptr<Data> data = make_shared<Data>();
+                    data->setName(dataName);
+                    data->setFreshnessPeriod(time::seconds(10));
+                    data->setContent(reinterpret_cast<const uint8_t*>(content.c_str()), content.size());
+                    //
+                    //        // Sign Data packet with default identity
+                    m_keyChain.sign(*data);
+                    //        // m_keyChain.sign(data, <identityName>);
+                    //        // m_keyChain.sign(data, <certificate>);
+                    //
+                    //        // Return Data packet to the requester
+
+                    m_face.put(*data);
+                }
             }
 
         }
@@ -1122,9 +1145,9 @@ namespace nfd {
                 timer_ptr->expires_from_now(std::chrono::milliseconds(1000));
                 timer_ptr->async_wait(boost::bind(&Nwd::wait_data));
                 timer_queue.push(timer_ptr);
-//                m_t.expires_from_now(std::chrono::milliseconds(2600));//set 400ms timer
-//
-//                m_t.async_wait(boost::bind(&Nwd::wait_data));
+                m_t.expires_from_now(std::chrono::milliseconds(1000));//set 400ms timer
+
+                m_t.async_wait(boost::bind(&Nwd::wait_data));
             }
         }else{
             search_dataset(interest_name);
